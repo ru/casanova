@@ -13,11 +13,23 @@ After doing so, you can either chose to work with eclipse or IntelliJ. With ecli
 you general game playing perspective over your project, allows you to debug GDL, etc. etc. In both cases, you will get
 all dependencies with sources attached to you project.
 
+## Install maven
+
+Follow the directions at the [maven website](http://maven.apache.org).
+
 ## Use eclipse
+
+First, you need to install [m2eclipse](http://m2eclipse.sonatype.org).
 
 You can use maven to generate an eclipse project for you by running
 
-> mvn eclipse:eclipse
+> mvn eclipse:m2eclipse
+
+You can now import the generated project into your eclipse workspace by doing
+
+> File -> Import.. -> General -> Existing Projects into Workspace
+
+and point to the directory which you checked out earlier.
 
 ## Use IntelliJ
 
