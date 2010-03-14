@@ -15,9 +15,10 @@ all dependencies with sources attached to you project.
 
 ## Install maven
 
-Follow the directions at the [maven website](http://maven.apache.org).
+We recommend the maven build system and have created a maven build descriptor for this project. Follow the directions
+at the [maven website](http://maven.apache.org) get up and running with maven.
 
-## Use eclipse
+## If you want to use eclipse
 
 First, you need to install [m2eclipse](http://m2eclipse.sonatype.org).
 
@@ -31,7 +32,7 @@ You can now import the generated project into your eclipse workspace by doing
 
 and point to the directory which you checked out earlier.
 
-## Use IntelliJ
+## If you want to use IntelliJ
 
 You can create a new project from a maven project in IntelliJ by doing
 
