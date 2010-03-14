@@ -16,7 +16,7 @@
         <repository>
             <id>project.embedded.module</id>
             <name>Project Embedded Repository</name>
-            <url>file://./embedded-repo</url>
+            <url>file://${project.basedir}/embedded-repo</url>
         </repository>
     </repositories>
 
