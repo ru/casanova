@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="BasicPlayer" basedir="." default="all">
+
+	<property environment="env"/>
+
+	<!-- project wide properties -->
+	<property name="src"   location="source"/>
+    <property name="build" location="build"/>
+	<property name="dist"  location="dist"/>
+	<property name="lib"   location="lib"/>
+	<property name="eclipse.jar" location="${env.ECLIPSE_DIR}/lib/eclipse.jar"/>
+	
+	<fileset id="libraries" dir="${lib}">
+		<include name="**/*.jar"/>
+	</fileset>
+	
+	<path id="buildclasspath">
+		<fileset refid="libraries"/>
+		<pathelement path="${eclipse.jar}"/>
+	</path>
+
+	<path id="runclasspath">
+		<path refid="buildclasspath"/>
+		<pathelement path="${build}"/>
+	</path>
+
+	<!-- initialise the ant building -->
+	<target name="init">
+	    <tstamp/>
+	    <!-- Create the build directory structure used by compile -->
+	    <mkdir dir="${build}"/>
+	</target>
+
+	<!-- compiles the source tree -->
+	<target name        = "compile"
+    		depends     = "init"
+    	    description = "Compiles everything in the source directory">
+        <javac srcdir="${src}" destdir="${build}" debug="true">
+			<classpath>
+				<fileset refid="libraries"/>
+				<pathelement path="${eclipse.jar}"/>
+			</classpath>
+		</javac>
+		
+		<!-- In case regression tests are used
+        <javac srcdir="${tests}" destdir="${build}" debug="true">
+			<classpath>
+				<pathelement path="${build}"/>
+				<fileset refid="libraries"/>
+			</classpath>
+		</javac>
+        -->
+		
+		<!-- copies the log4j and hibernate property files to build -->
+		<copy todir="${build}">
+			<fileset dir="${src}">
+				<include name="**/*.properties"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+    </target>
+
+	<!-- prepares a runable distribution -->
+ 	<target name="dist" depends="compile">
+        <!-- creates the directories -->
+		<mkdir dir="${dist}/lib"/>
+		<mkdir dir="${dist}/prologsource"/>
+
+		<!-- creates the jar file -->
+		<jar jarfile="${dist}/lib/${ant.project.name}.jar" basedir="${build}"/>
+
+		<!-- copies the data files into the dist dir -->
+		<copy todir="${dist}/prologsource">
+			<fileset dir="prologsource">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- main target used by IDE -->
+    <target name="all" depends="compile" description="Main Target">
+    </target>
+
+	<!-- runs the project -->
+	<target name="run" depends="all">
+		<java classname="de.tudresden.inf.ggp.basicplayer.MyPlayer"
+			fork="true">
+			<classpath>
+				<pathelement path="${build}"/>
+				<fileset refid="libraries"/>
+				<pathelement path="${eclipse.jar}"/>
+			</classpath>
+		</java>
+	</target>
+
+	<!-- runs the unit tests -->
+	<target name="unittest" depends="all">
+		<junit fork="yes">
+			<classpath>
+				<pathelement path="${build}"/>
+				<fileset refid="libraries"/>
+			</classpath>			
+		</junit>
+	</target>
+
+
+	<!-- cleans up the project -->
+	<target name="clean" description="Deletes everything build via ant">
+		<delete dir="${build}" failonerror="false"/>
+    	<delete dir="doc"  failonerror="false"/>
+    	<delete dir="${dist}"  failonerror="false"/>
+    </target>
+
+    <target name="doc">
+        <javadoc access="private" author="true" classpathref="buildclasspath" destdir="doc" doctitle="${ant.project.name}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" sourcepath="${src}" splitindex="true" use="true" version="true">
+        	<link href="http://java.sun.com/javase/6/docs/api/"/>
+        	<link href="http://87.230.22.228/doc/javadoc/JavaEclipseInterface/"/>
+        	<link href="http://palamedes-ide.sourceforge.net/javadoc/"/>
+        </javadoc>
+    	
+    </target>
+
+</project>
