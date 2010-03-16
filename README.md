@@ -32,7 +32,7 @@ We have already created a branch for each group. Before you start doing your stu
 
 This will show a list of all the branches. If your group's name is 'lonerangers', run
 
-    $ git checkout lonerangers
+    $ git checkout -t origin/lonerangers
 
 If you now type
 
