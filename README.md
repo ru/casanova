@@ -23,7 +23,7 @@ It's good to configure git setting your name and email. It will appear in the Gi
 
 This is where the fun stuff starts.  Let's create a local clone of the repository.
 
-    $ git@github.com:ru/casanova.git
+    $ git clone git@github.com:ru/casanova.git
 
 We have already created a branch for each group. Before you start doing your stuff, switch to that branch. 
 
