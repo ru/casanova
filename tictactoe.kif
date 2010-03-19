@@ -85,8 +85,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;; 
 
 (<= (legal ?player (mark ?x ?y)) 
-  (true (cell ?x ?y b)) 
-  (true (control ?player))) 
+  (true (cell ?x ?y b))
+  (true (control ?player)))
 
 (<= (legal x noop) 
   (true (control o))) 
