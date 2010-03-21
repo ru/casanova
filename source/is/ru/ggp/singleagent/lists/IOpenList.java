@@ -9,4 +9,6 @@ public interface IOpenList {
 	void clearList();
 	IGameNode getGameNode(String stateId);
 	IGameNode getMostProminentGameNode();
+    boolean isEmpty();
+    void add(IGameNode node);
 }

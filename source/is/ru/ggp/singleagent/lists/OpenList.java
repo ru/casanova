@@ -7,7 +7,6 @@ public class OpenList implements IOpenList{
 	@Override
 	public void clearList() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -21,5 +20,10 @@ public class OpenList implements IOpenList{
 		// TODO Auto-generated method stub
 		return null;
 	}
+    public boolean isEmpty(){
+        return false;
+    }
 
+    public void add(IGameNode node){
+    }
 }

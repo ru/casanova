@@ -12,13 +12,13 @@ import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
-
+import is.ru.ggp.singleagent.AStarStategy;
 public final class MyPlayer extends Player {
 
 	static {
 		StrategyFactory.getInstance().addDescription(
 							"MyRandomStrategy",
-							MyRandomStrategy.class.getCanonicalName(),
+							AStarStategy.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
 	
