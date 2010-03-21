@@ -1,5 +1,6 @@
 package is.ru.ggp.singleagent.lists;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 
@@ -12,8 +13,9 @@ public class ClosedList implements IClosedList{
 	}
 
 	private String createStateId (final IGameNode node){
-		return "String";
-		//TODO createStateID
+		Random randomGenerator = new Random();
+		int randomInt = randomGenerator.nextInt(Integer.MAX_VALUE);
+		return Integer.toString(node.hashCode() + randomInt);
 	}
 	
 	@Override
