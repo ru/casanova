@@ -20,7 +20,7 @@ public class ClosedList implements IClosedList{
 	
 	@Override
 	public void addToList(IGameNode node) {
-		hashmap.put(createStateId(node), node);
+		hashmap.put(this.createStateId(node), node);
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class ClosedList implements IClosedList{
 
 	@Override
 	public void removeFromList(String stateId) {
-		hashmap.remove(stateId);
+		if(this.hashmap.containsKey(stateId))
+			hashmap.remove(stateId);
 	}
 
 	@Override
 	public boolean contains(IGameNode node) {
-		return hashmap.containsValue(node);
+		return false;
 	}
-
 }

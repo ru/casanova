@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
+
+import is.ru.ggp.singleagent.common.ValueNode;
 import is.ru.ggp.singleagent.lists.IClosedList; 
 import is.ru.ggp.singleagent.lists.IOpenList;
 import org.eclipse.palamedes.gdl.core.simulation.TimerFlag;
@@ -42,9 +44,13 @@ public class AStarStategy extends AbstractStrategy
     @Override
 	public IMove getMove(IGameNode currentNode) 
     {
-        try {
+        // Convert to value node which contains value
+    	// and A* node helper functions.
+    	ValueNode node = new ValueNode(currentNode);
+    	
+    	try {
             System.out.println(">> TEST");
-            List<IMove[]> moves = match.getGame().getCombinedMoves(currentNode);
+            List<IMove[]> moves = match.getGame().getCombinedMoves(node.gameNode);
             return moves.get( random.nextInt( moves.size() ) )[playerNumber];
         }
         catch (InterruptedException e) {

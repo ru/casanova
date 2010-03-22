@@ -1,14 +1,13 @@
 package is.ru.ggp.singleagent.lists;
 
-import org.eclipse.palamedes.gdl.core.model.IGameNode;
-
+import is.ru.ggp.singleagent.common.ValueNode;
 /**
  * Interface for the Open list which is used in the A* algorithm.
  */
 public interface IOpenList {
-	void clearList();
-	IGameNode getGameNode(String stateId);
-	IGameNode getMostProminentGameNode();
-    boolean isEmpty();
-    void add(IGameNode node);
+	void clearList();	
+	boolean contains(ValueNode node);
+	ValueNode getMostProminentGameNode();
+	boolean isEmpty();
+    void add(ValueNode node);
 }
