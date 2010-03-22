@@ -22,11 +22,13 @@ public class AStarStategy extends AbstractStrategy
     // Member variables
     private IClosedList closedList;
     private IOpenList openList;
-    private Match match; 
+    private boolean continueSearch = true;
+    
+    // flag used if we have found a new the best path.
+    private boolean foundBestPath = false;
 
     // Constructor for the class
-    public AStarStategy()
-    {
+    public AStarStategy(){
         // Create instance of the open and closed list.
         this.closedList = new ClosedList(); 
         this.openList = new OpenList();
@@ -35,21 +37,38 @@ public class AStarStategy extends AbstractStrategy
     @Override
     public void initMatch(Match initMatch){
         super.initMatch(initMatch);
-        System.out.println(">> kallad i init matach");
-        this.match = initMatch;
-        TimerFlag timer = match.getTimer();
-        System.out.println(">> Thad var timer interrupt.");
+        System.out.println("[A*] InitMatch executed.");
+        ValueNode node = new ValueNode(game.getTree().getRootNode());
+        this.openList.add(node);
+        this.astar();
+        
     }
     
     @Override
 	public IMove getMove(IGameNode currentNode) 
     {
-        // Convert to value node which contains value
-    	// and A* node helper functions.
+    	// Check if we want to continue the search from the init match phase.
+    	// This will only be for the first time to combine the start time and the
+    	// first play time.
     	ValueNode node = new ValueNode(currentNode);
+    	if(continueSearch == false){
+    		this.openList.add(node);
+        }
+    	else{
+    		continueSearch = false;
+    	}
+    	// Do A star search.
+    	this.astar();
+    	
+    	// Re-construct the path.
+    	
+    	// clear lists.
+    	
+    	// return the first action in the path found.
+    	
+
     	
     	try {
-            System.out.println(">> TEST");
             List<IMove[]> moves = match.getGame().getCombinedMoves(node.gameNode);
             return moves.get( random.nextInt( moves.size() ) )[playerNumber];
         }
@@ -61,6 +80,23 @@ public class AStarStategy extends AbstractStrategy
 	}
     
 
-    private void search(){
+    private void astar(){
+    	int bestTerminalValue = -1;
+    	
+    	System.out.println("[A*] Astar search initalized.");
+    	TimerFlag timer = match.getTimer();
+    	 
+    	while(!this.openList.isEmpty() && bestTerminalValue < 100 )
+    	{
+    		if(timer.interrupted())
+    			return;
+    		
+    		ValueNode node = this.openList.getMostProminentGameNode();	
+    		
+    		if(node.gameNode.isTerminal()){
+    			// reconstruct a path.
+    			return;
+    		}
+    	}
     }
 }

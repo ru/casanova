@@ -1,4 +1,6 @@
 package is.ru.ggp.singleagent.common;
+import java.util.Random;
+
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 
 public class ValueNode implements Comparable
@@ -10,27 +12,32 @@ public class ValueNode implements Comparable
 		this.gameNode = gameNode;
 	}
 	
-	public int getValue(){
+	public int getHauristicValue(){
 		return this.getDepth() + 0;
 	}
 	
-	public int getDepth(){
+	private int getDepth(){
 		return this.gameNode.getDepth();
 	}
 	
 	public String getStateId(){
-		return "";
+		return this.createStateId();
 	}
 	
 	@Override
 	public int compareTo(Object arg0) 
 	{
 		ValueNode o = (ValueNode)arg0;
-		if(this.getValue() < o.getValue())
+		if(this.getHauristicValue() < o.getHauristicValue())
 			return -1;
-		if(this.getValue() > o.getValue())
+		if(this.getHauristicValue() > o.getHauristicValue())
 			return 1;
 		else
 			return 0;
 	}
+	
+	private String createStateId(){		
+		return Integer.toString(this.hashCode());
+	}
+	
 }
