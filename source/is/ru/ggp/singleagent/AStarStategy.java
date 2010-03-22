@@ -7,10 +7,11 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 import is.ru.ggp.singleagent.lists.IClosedList; 
 import is.ru.ggp.singleagent.lists.IOpenList;
+import org.eclipse.palamedes.gdl.core.simulation.TimerFlag;
 
 import is.ru.ggp.singleagent.lists.ClosedList; 
 import is.ru.ggp.singleagent.lists.OpenList;
-
+import org.eclipse.palamedes.gdl.core.simulation.Match;
 
 
 
@@ -18,7 +19,8 @@ public class AStarStategy extends AbstractStrategy
 {
     // Member variables
     private IClosedList closedList;
-    private IOpenList openList; 
+    private IOpenList openList;
+    private Match match; 
 
     // Constructor for the class
     public AStarStategy()
@@ -29,11 +31,19 @@ public class AStarStategy extends AbstractStrategy
     }
     
     @Override
+    public void initMatch(Match initMatch){
+        super.initMatch(initMatch);
+        System.out.println(">> kallad i init matach");
+        this.match = initMatch;
+        TimerFlag timer = match.getTimer();
+        System.out.println(">> Thad var timer interrupt.");
+    }
+    
+    @Override
 	public IMove getMove(IGameNode currentNode) 
     {
-        /*
         try {
-            System.out.println("TEST");
+            System.out.println(">> TEST");
             List<IMove[]> moves = match.getGame().getCombinedMoves(currentNode);
             return moves.get( random.nextInt( moves.size() ) )[playerNumber];
         }
@@ -42,17 +52,9 @@ public class AStarStategy extends AbstractStrategy
         }
         
         return null;
-        */
-        return null;
 	}
-	
-	/**
-	 * Implemenation of the A* algorithm.
-	 * @param timebound
-	 * @param currentNode
-	 * @return
-	 */
-	private IMove aStar(int timebound, IGameNode currentNode){
-		return null;
-	}
+    
+
+    private void search(){
+    }
 }
