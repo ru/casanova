@@ -12,7 +12,7 @@ public class ValueNode implements Comparable
     public double h = 0;
     public double g = 0;
     public ValueNode parent = null;
-    public IMove[] parentAction = null;
+    public IMove parentAction = null;
 		
 	public ValueNode(IGameNode gameNode){
 		this.gameNode = gameNode;

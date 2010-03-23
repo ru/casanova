@@ -17,8 +17,6 @@ import is.ru.ggp.singleagent.lists.ClosedList;
 import is.ru.ggp.singleagent.lists.OpenList;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 
-
-
 public class AStarStategy extends AbstractStrategy 
 {
     // Member variables
@@ -118,7 +116,7 @@ public class AStarStategy extends AbstractStrategy
                 for (IMove[] move : moveList) {
                     ValueNode nextNode = new ValueNode(game.getNextNode(node.gameNode, move));
                     nextNode.parent = node;
-                    nextNode.parentAction = move;
+                    nextNode.parentAction = move[0];
 
 
                     if(!this.closedList.contains(nextNode)){
