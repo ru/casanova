@@ -18,7 +18,7 @@ public class ClosedList implements IClosedList{
 	}
 
 	@Override
-	public void clearList() {
+	public void clear() {
 		hashmap.clear();	
 	}
 

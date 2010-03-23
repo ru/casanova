@@ -90,16 +90,19 @@ public class AStarStategy extends AbstractStrategy
 
         this.astar();
 
-        
-    	
-    	// todo: Re-construct the path.
-    	// todo: clear lists.
-    	// todo: return the first action in the path found.
-        
+        if(this.bestValueNode !=null){
+         // reconstuct nota fremstu
+        }
+        else{
+            // pick best from fringe!
+        }
+
+        // we clear the open and close list.
+        this.closedList.clear();
+        this.openList.clear();
+
         return this.mock(currentNode);
 	}
-    
-
 
     private IMove mock(IGameNode currentNode)
     {

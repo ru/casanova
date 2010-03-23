@@ -21,7 +21,7 @@ public class OpenList implements IOpenList{
         this.stateIdHashSet = new HashMap<String, ValueNode>();
 	}
 
-	public void clearList() {
+	public void clear() {
 		this.stateIdHashSet.clear();
 		this.sortedValueNodeList.clear();
 	}
