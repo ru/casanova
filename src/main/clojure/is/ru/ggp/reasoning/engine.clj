@@ -1,4 +1,4 @@
-(ns inference
+(ns is.ru.ggp.reasoning.engine
   (:require
     [clojure.zip :as z]
     [clojure.contrib.zip-filter :as zf]
@@ -82,8 +82,8 @@
         variables (filter #(keyword? (second %)) (su/indexed pred))
         constants (filter #(not (keyword? (second %))) (su/indexed pred))
         expr (zipmap (map second variables) (map first variables))]
-    (list `(fn [state#]
-      (for [pred# state# :let [~ps pred#] :when ~(cons 'and (map #(list '= (symbol (param (first %))) (symbol (str "'" (name (second %))))) constants))] ~expr)))))
+    `(fn [state#]
+      (for [pred# state# :let [~ps pred#] :when ~(cons 'and (map #(list '= (symbol (param (first %))) (symbol (str "'" (name (second %))))) constants))] ~expr))))
 ; :when ~(cons 'and (map #(list '= (symbol (str "'" (name (second %))))) constants))
 
 ; for [pred state :let [[p1 p2 p3 p4] pred] :when (and (= p1 'cell) (= p4 'b))] {:x p2 :y p3})
