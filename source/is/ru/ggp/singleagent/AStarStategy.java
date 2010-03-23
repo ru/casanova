@@ -2,6 +2,7 @@ package is.ru.ggp.singleagent;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import is.ru.ggp.singleagent.heuristic.HeuristicFactory;
 import is.ru.ggp.singleagent.heuristic.IHeuristic;
@@ -31,8 +32,8 @@ public class AStarStategy extends AbstractStrategy
 
     private boolean solved = false;
     private ValueNode bestValueNode = null;
-     List<IMove> solvedMoves = new LinkedList();
-    
+    List<IMove> solvedMoves = new LinkedList();
+    Stack<IMove> solvedMovesStack = new Stack<IMove>();
     // flag used if we have found a new the best path.
 
 
@@ -144,6 +145,12 @@ public class AStarStategy extends AbstractStrategy
     		// If we find a goal, then we stop the search and then we reconstruct the path.
     		if(node.gameNode.getState().isTerminal()){
 
+                try {
+                    int goal = game.getReasoner().getGoalValue(player, node.gameNode.getState());
+                    System.out.println(goal);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
                 if(this.bestValueNode == null){
                     System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
                     this.bestValueNode = node;
