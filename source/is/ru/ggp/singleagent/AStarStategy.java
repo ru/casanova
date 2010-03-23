@@ -54,7 +54,7 @@ public class AStarStategy extends AbstractStrategy
 
         // Create the initial node and calculate the heuristic value
         // and set the cost to 0 (where it is the first node).
-        ValueNode node = new ValueNode(initMatch.getCurrentNode()); 
+        ValueNode node = new ValueNode(initMatch.getCurrentNode(), game); 
         node.g = 0;
         node.h = this.heuristic.getHeuristic(node);
 
@@ -78,7 +78,7 @@ public class AStarStategy extends AbstractStrategy
         // Check if we want to continue the search from the init match phase.
     	// This will only be for the first time to combine the start time and the
     	// first play time.
-    	ValueNode node = new ValueNode(currentNode);
+    	ValueNode node = new ValueNode(currentNode, game);
     	if(continueSearch == false){
     		this.openList.add(node);
         }
@@ -144,13 +144,6 @@ public class AStarStategy extends AbstractStrategy
 
     		// If we find a goal, then we stop the search and then we reconstruct the path.
     		if(node.gameNode.getState().isTerminal()){
-
-                try {
-                    int goal = game.getReasoner().getGoalValue(player, node.gameNode.getState());
-                    System.out.println(goal);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
                 if(this.bestValueNode == null){
                     System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
                     this.bestValueNode = node;
@@ -203,7 +196,7 @@ public class AStarStategy extends AbstractStrategy
                     IGameState newState = reasoner.getNextState(node.gameNode.getState(), m);
                     IGameNode  newGameNode = new GameNode();
                     newGameNode.setState(newState);
-                    ValueNode nextNode = new ValueNode(newGameNode);
+                    ValueNode nextNode = new ValueNode(newGameNode, game);
 
                     nextNode.parent = node;
                     nextNode.parentAction = move;
