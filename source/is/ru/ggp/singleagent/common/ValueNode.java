@@ -17,33 +17,19 @@ public class ValueNode implements Comparable
 	public ValueNode(IGameNode gameNode){
 		this.gameNode = gameNode;
 	}
-	
-	public int getHauristicValue(){
-		return this.getDepth() + 0;
-	}
-	
-	private int getDepth(){
-		return this.gameNode.getDepth();
-	}
-	
+    
 	public String getStateId(){
-		return this.createStateId();
+        return this.gameNode.getState().toString();
 	}
 	
 	@Override
-	public int compareTo(Object arg0) 
-	{
+	public int compareTo(Object arg0) {
 		ValueNode o = (ValueNode)arg0;
-		if(this.getHauristicValue() < o.getHauristicValue())
+		if(this.h + this.g < o.h + this.g)
 			return -1;
-		if(this.getHauristicValue() > o.getHauristicValue())
+		if(this.h + this.g > o.h + this.g)
 			return 1;
 		else
 			return 0;
 	}
-	
-	private String createStateId(){		
-		return Integer.toString(this.hashCode());
-	}
-	
 }

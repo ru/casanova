@@ -9,7 +9,7 @@ import org.eclipse.palamedes.gdl.core.model.IGameNode;
  */
 public interface IClosedList {
 	void clearList();
-	void addToList(ValueNode node);
+	void add(ValueNode node);
 	void removeFromList(String stateId);
 	boolean contains(ValueNode node);
 }

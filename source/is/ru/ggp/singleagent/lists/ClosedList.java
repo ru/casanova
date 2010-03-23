@@ -2,9 +2,6 @@ package is.ru.ggp.singleagent.lists;
 import is.ru.ggp.singleagent.common.ValueNode;
 
 import java.util.HashMap;
-import java.util.Random;
-
-import org.eclipse.palamedes.gdl.core.model.IGameNode;
 
 public class ClosedList implements IClosedList{
 	
@@ -15,7 +12,7 @@ public class ClosedList implements IClosedList{
 	}
 	
 	@Override
-	public void addToList(ValueNode node) {
+	public void add(ValueNode node) {
 		hashmap.put(node.getStateId(), node);
 	}
 
@@ -32,6 +29,6 @@ public class ClosedList implements IClosedList{
 
 	@Override
 	public boolean contains(ValueNode node) {
-		return false;
+		return this.hashmap.containsKey(node.getStateId());
 	}
 }

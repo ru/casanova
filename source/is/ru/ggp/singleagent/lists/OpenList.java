@@ -1,28 +1,28 @@
 package is.ru.ggp.singleagent.lists;
 
 import is.ru.ggp.singleagent.common.ValueNode;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class OpenList implements IOpenList{
 	
 
 	// Member variables
-	// Change this to HashSet.
-	private HashMap <String, ValueNode> stateIdHash;
+    private HashMap<String, ValueNode> stateIdHashSet;
 	private ArrayList<ValueNode> sortedValueNodeList;
 	
 	// Constructor
 	public OpenList(){
-		this.stateIdHash = new HashMap <String, ValueNode>();
 		this.sortedValueNodeList = new ArrayList<ValueNode>();
+        this.stateIdHashSet = new HashMap<String, ValueNode>();
 	}
-	
-	@Override
+
 	public void clearList() {
-		this.stateIdHash.clear();
+		this.stateIdHashSet.clear();
 		this.sortedValueNodeList.clear();
 	}
 	
@@ -32,22 +32,21 @@ public class OpenList implements IOpenList{
 
     @SuppressWarnings("unchecked")
 	public void add(ValueNode node){
-    	this.stateIdHash.put(node.getStateId(), null);
-    	this.sortedValueNodeList.add(node);
+    	this.stateIdHashSet.put(node.getStateId(), node);
+        this.sortedValueNodeList.add(node);
     	Collections.sort(this.sortedValueNodeList);
     }
 
-    @Override
     public ValueNode get(String stringId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if(this.stateIdHashSet.containsKey(stringId))
+            return this.stateIdHashSet.get(stringId);
+        return null;
     }
 
-    @Override
 	public boolean contains(ValueNode node) {
-		return this.stateIdHash.containsKey(node.getStateId());
+		return this.stateIdHashSet.containsKey(node.getStateId());
 	}
 
-	@Override
 	public ValueNode getMostProminentGameNode() {
 		// Get the most promising node. It is the first one in the
 		// array list where the list is sorted.
@@ -57,10 +56,8 @@ public class OpenList implements IOpenList{
 		sortedValueNodeList.remove(0);
 		
 		// We remove it from the hash list.
-		this.stateIdHash.remove(returnNode.getStateId());
-		
-		System.out.println("[A*] most prominent node with state id " + returnNode.getStateId());
-		
+		this.stateIdHashSet.remove(returnNode.getStateId());
+	
 		return returnNode;
 	}
 }

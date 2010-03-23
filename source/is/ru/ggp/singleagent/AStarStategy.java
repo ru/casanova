@@ -5,7 +5,10 @@ import java.util.List;
 import is.ru.ggp.singleagent.heuristic.HeuristicFactory;
 import is.ru.ggp.singleagent.heuristic.IHeuristic;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
+import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
+import org.eclipse.palamedes.gdl.core.model.IReasoner;
+import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
 import is.ru.ggp.singleagent.common.ValueNode;
@@ -41,15 +44,16 @@ public class AStarStategy extends AbstractStrategy
         super.initMatch(initMatch);
         System.out.println("[A*] InitMatch executed.");
 
-        // For the first node we set the cost to 0 and we calculate hauristic
-        // value for the node.
-        ValueNode node = new ValueNode(game.getTree().getRootNode());
+        // Create the initial node and calculate the heuristic value
+        // and set the cost to 0 (where it is the first node).
+        ValueNode node = new ValueNode(initMatch.getCurrentNode()); 
         node.g = 0;
         node.h = this.heuristic.getHeuristic(node);
 
+        // Add the initial node to the open list and initialize the
+        // start time A* search.
         this.openList.add(node);
         this.astar();
-        
     }
     
     @Override
@@ -65,28 +69,39 @@ public class AStarStategy extends AbstractStrategy
     	else{
     		continueSearch = false;
     	}
-    	// Do A star search.
+    	// Do A* search.
     	this.astar();
     	
-    	// Re-construct the path.
-    	
-    	// clear lists.
-    	
-    	// return the first action in the path found.
-    	
+    	// todo: Re-construct the path.
+    	// todo: clear lists.
+    	// todo: return the first action in the path found.
+        
+        System.out.println(">> HERERERE");
+        return this.mock(currentNode);
+	}
+    
 
-    	
-    	try {
-            List<IMove[]> moves = match.getGame().getCombinedMoves(node.gameNode);
+
+    private IMove mock(IGameNode currentNode)
+    {
+            	/** XXX: All strategy relevant code goes in here. */
+        try {
+            List<IMove[]> moves = match.getGame().getCombinedMoves(currentNode);
             return moves.get( random.nextInt( moves.size() ) )[playerNumber];
         }
         catch (InterruptedException e) {
             System.out.println("getMove() stopped by time.");
         }
-        
+
         return null;
-	}
-    
+    }
+
+
+
+
+
+
+
 
     private void astar(){
     	int bestTerminalValue = -1;
@@ -94,34 +109,69 @@ public class AStarStategy extends AbstractStrategy
     	System.out.println("[A*] Astar search initalized.");
     	TimerFlag timer = match.getTimer();
     	 
-    	while(!this.openList.isEmpty() && bestTerminalValue < 100 )
-    	{
+        IReasoner reasoner = game.getReasoner();
+        String player = game.getRoleNames()[0];
+
+
+
+        while(!this.openList.isEmpty() && bestTerminalValue < 100 ){
     		if(timer.interrupted())
     			return;
-    		
-    		ValueNode node = this.openList.getMostProminentGameNode();	
-    		
-    		// If we find a goal, then we stop the search
-    		// and then we reconstruct the path.
+
+            // Pick the best node from the fringe.
+    		ValueNode node = this.openList.getMostProminentGameNode();
+            
+
+    		// If we find a goal, then we stop the search and then we reconstruct the path.
     		if(node.gameNode.isTerminal()){
+                System.out.println("[A*] fundum goal value, we must do somthing.");
     			return;
     		}
     		// add the node to the close list.
-    		this.closedList.addToList(node);
+    		this.closedList.add(node);
     		
     		try {
-                List<IMove[]> moveList = game.getCombinedMoves(node.gameNode);
+                // Loop through the possible action that the most promising node
+                // on the fringe has.
+                IMove[] moves = reasoner.getLegalMoves(player, node.gameNode.getState());
+                for (IMove move : moves)
+                {
+                    // create new node for each action.
+                    IMove[] m = new IMove[1];
+                    m[0] = move;
+                    IGameState newState = reasoner.getNextState(node.gameNode.getState(), m);
+                    IGameNode  newGameNode = new GameNode();
+                    newGameNode.setState(newState);
+                    ValueNode nextNode = new ValueNode(newGameNode);
 
-                // Loop through the node
-                for (IMove[] move : moveList) {
-                    ValueNode nextNode = new ValueNode(game.getNextNode(node.gameNode, move));
                     nextNode.parent = node;
-                    nextNode.parentAction = move[0];
+                    nextNode.parentAction = move;
+
+                    if(this.closedList.contains(nextNode)){
+                        System.out.println("[A*] node already on closed list... go for next one!");   
+                    }
+                    else{
+
+                        if(!this.openList.contains(nextNode)) // if the new node.
+                        {
+                            this.openList.add(nextNode);    
+                        }
+                        else // if the node is already on the open list..
+                        {
+                            ValueNode oldNewNode = this.openList.get(nextNode.getStateId());
+                            if(oldNewNode.g + oldNewNode.h > nextNode.g + oldNewNode.h)
+                            {
+                                System.out.println("Node is better");
+                            }
+                        }
+                        // put all the nodes on the open list.
+                    }
 
 
+                    /*
                     if(!this.closedList.contains(nextNode)){
                         // calculate the h value
-                        int hValue =  nextNode.getHauristicValue();
+                        double hValue =  nextNode.h;
 
                         // If the new node is not in the open list, then we add it.
                         boolean isBest;
@@ -130,6 +180,7 @@ public class AStarStategy extends AbstractStrategy
                         else{    
                         }
                     }
+                    */
                 }
 				
 			} catch (InterruptedException e) {
