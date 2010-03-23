@@ -76,7 +76,6 @@ public class AStarStategy extends AbstractStrategy
     	// todo: clear lists.
     	// todo: return the first action in the path found.
         
-        System.out.println(">> HERERERE");
         return this.mock(currentNode);
 	}
     
@@ -123,7 +122,7 @@ public class AStarStategy extends AbstractStrategy
             
 
     		// If we find a goal, then we stop the search and then we reconstruct the path.
-    		if(node.gameNode.isTerminal()){
+    		if(node.gameNode.getState().isTerminal()){
                 System.out.println("[A*] fundum goal value, we must do somthing.");
     			return;
     		}

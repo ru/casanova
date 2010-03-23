@@ -14,7 +14,7 @@ public class ClosedList implements IClosedList{
 	@Override
 	public void add(ValueNode node) {
 		hashmap.put(node.getStateId(), node);
-        System.out.println("[ClosedList] added node");
+        //System.out.println("[ClosedList] added node");
 	}
 
 	@Override
