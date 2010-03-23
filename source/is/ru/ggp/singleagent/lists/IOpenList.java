@@ -10,4 +10,5 @@ public interface IOpenList {
 	ValueNode getMostProminentGameNode();
 	boolean isEmpty();
     void add(ValueNode node);
+    ValueNode get(String stringId);
 }

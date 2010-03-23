@@ -11,12 +11,12 @@ public class OpenList implements IOpenList{
 
 	// Member variables
 	// Change this to HashSet.
-	private HashMap <String, Object> stateIdHash;
+	private HashMap <String, ValueNode> stateIdHash;
 	private ArrayList<ValueNode> sortedValueNodeList;
 	
 	// Constructor
 	public OpenList(){
-		this.stateIdHash = new HashMap <String, Object>();
+		this.stateIdHash = new HashMap <String, ValueNode>();
 		this.sortedValueNodeList = new ArrayList<ValueNode>();
 	}
 	
@@ -37,7 +37,12 @@ public class OpenList implements IOpenList{
     	Collections.sort(this.sortedValueNodeList);
     }
 
-	@Override
+    @Override
+    public ValueNode get(String stringId) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public boolean contains(ValueNode node) {
 		return this.stateIdHash.containsKey(node.getStateId());
 	}
