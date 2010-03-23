@@ -1,5 +1,6 @@
 package is.ru.ggp.singleagent;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import is.ru.ggp.singleagent.heuristic.HeuristicFactory;
@@ -27,15 +28,21 @@ public class AStarStategy extends AbstractStrategy
     private IOpenList openList;
     private boolean continueSearch = true;
     private IHeuristic heuristic;
+
+    private boolean solved = false;
+    private ValueNode bestValueNode = null;
+     List<IMove> solvedMoves = new LinkedList();
     
     // flag used if we have found a new the best path.
-    private boolean foundBestPath = false;
+
 
     // Constructor for the class
     public AStarStategy(){
         // Create instance of the open and closed list.
         this.closedList = new ClosedList(); 
         this.openList = new OpenList();
+
+        // Calculate the heuristic value of the first node.
         this.heuristic = HeuristicFactory.getRelaxation();
     }
     
@@ -59,7 +66,15 @@ public class AStarStategy extends AbstractStrategy
     @Override
 	public IMove getMove(IGameNode currentNode) 
     {
-    	// Check if we want to continue the search from the init match phase.
+
+        // Check if we have already solved the game
+        if(this.solved){
+            IMove returnMove = this.solvedMoves.get(this.solvedMoves.size()-1);
+            this.solvedMoves.remove(this.solvedMoves.size()-1);
+            return returnMove;
+        }
+
+        // Check if we want to continue the search from the init match phase.
     	// This will only be for the first time to combine the start time and the
     	// first play time.
     	ValueNode node = new ValueNode(currentNode);
@@ -69,8 +84,13 @@ public class AStarStategy extends AbstractStrategy
     	else{
     		continueSearch = false;
     	}
-    	// Do A* search.
-    	this.astar();
+
+
+        // Do A* search.
+
+        this.astar();
+
+        
     	
     	// todo: Re-construct the path.
     	// todo: clear lists.
@@ -123,10 +143,45 @@ public class AStarStategy extends AbstractStrategy
 
     		// If we find a goal, then we stop the search and then we reconstruct the path.
     		if(node.gameNode.getState().isTerminal()){
-                System.out.println("[A*] fundum goal value, we must do somthing.");
-    			return;
+
+                if(this.bestValueNode == null){
+                    System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
+                    this.bestValueNode = node;
+                    if(this.bestValueNode.getGoalValue() == 100)
+                    {
+                        this.solved = true;
+                        System.out.println("[A*] Game solved.");
+
+                        ValueNode n = this.bestValueNode;
+                        while(n != null){
+                            this.solvedMoves.add(n.parentAction);
+                            n = n.parent;
+                        }
+                        return;
+                    }
+                }
+                else{
+                    int goalValue = node.gameNode.getState().getGoalValue(0);
+                    // should this be GEQ?
+                    if(node.getGoalValue() > this.bestValueNode.getGoalValue()){
+                        this.bestValueNode = node;
+                        System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
+                        if(this.bestValueNode.getGoalValue() == 100){
+                            this.solved = true;
+                            System.out.println("[A*] Game solved.");
+                            ValueNode n = this.bestValueNode;
+                            while(n != null){
+                                this.solvedMoves.add(n.parentAction);
+                                n = n.parent;
+                            }
+                            return;
+                        }
+                    }
+                }
     		}
-    		// add the node to the close list.
+
+
+            // add the node to the close list.
     		this.closedList.add(node);
     		
     		try {

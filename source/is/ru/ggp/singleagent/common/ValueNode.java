@@ -32,4 +32,8 @@ public class ValueNode implements Comparable
 		else
 			return 0;
 	}
+
+    public int getGoalValue(){
+        return this.gameNode.getState().getGoalValue(0);
+    }
 }
