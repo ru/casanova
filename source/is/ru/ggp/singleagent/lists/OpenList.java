@@ -35,6 +35,7 @@ public class OpenList implements IOpenList{
     	this.stateIdHashSet.put(node.getStateId(), node);
         this.sortedValueNodeList.add(node);
     	Collections.sort(this.sortedValueNodeList);
+        System.out.println("[Ope] added node");
     }
 
     public ValueNode get(String stringId) {
