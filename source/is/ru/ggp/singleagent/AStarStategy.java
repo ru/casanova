@@ -93,10 +93,36 @@ public class AStarStategy extends AbstractStrategy
     		
     		ValueNode node = this.openList.getMostProminentGameNode();	
     		
+    		// If we find a goal, then we stop the search
+    		// and then we reconstruct the path.
     		if(node.gameNode.isTerminal()){
-    			// reconstruct a path.
     			return;
     		}
+    		// add the node to the close list.
+    		this.closedList.addToList(node);
+    		
+    		try {
+                List<IMove[]> moveList = game.getCombinedMoves(node.gameNode);
+
+                // Loop through the node
+                for (IMove[] move : moveList) {
+                    ValueNode nextNode = new ValueNode(game.getNextNode(node.gameNode, move));
+                    if(!this.closedList.contains(nextNode))
+                    {
+                        // calculate the h value
+                        int hValue =  nextNode.getHauristicValue();
+
+                        // If the new node is not in the open list, then we add it.
+                        boolean isBest;
+                        if(!this.openList.contains(nextNode))
+                            this.openList.add(nextNode);
+                    }
+                }
+				
+			} catch (InterruptedException e) {
+				System.out.println("[A*] got InterruptedException while going through neighbours.");
+                return;
+			}
     	}
     }
 }

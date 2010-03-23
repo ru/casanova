@@ -1,5 +1,7 @@
 package is.ru.ggp.singleagent.lists;
 
+import is.ru.ggp.singleagent.common.ValueNode;
+
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 
 /**
@@ -7,7 +9,7 @@ import org.eclipse.palamedes.gdl.core.model.IGameNode;
  */
 public interface IClosedList {
 	void clearList();
-	void addToList(IGameNode node);
+	void addToList(ValueNode node);
 	void removeFromList(String stateId);
-	boolean contains(IGameNode node);
+	boolean contains(ValueNode node);
 }

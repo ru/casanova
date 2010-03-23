@@ -54,6 +54,8 @@ public class OpenList implements IOpenList{
 		// We remove it from the hash list.
 		this.stateIdHash.remove(returnNode.getStateId());
 		
+		System.out.println("[A*] most prominent node with state id " + returnNode.getStateId());
+		
 		return returnNode;
 	}
 }
