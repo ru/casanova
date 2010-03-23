@@ -70,8 +70,7 @@ public class AStarStategy extends AbstractStrategy
 
         // Check if we have already solved the game
         if(this.solved){
-            IMove returnMove = this.solvedMoves.get(this.solvedMoves.size()-1);
-            this.solvedMoves.remove(this.solvedMoves.size()-1);
+            IMove returnMove = this.solvedMovesStack.pop();
             return returnMove;
         }
 
@@ -154,7 +153,9 @@ public class AStarStategy extends AbstractStrategy
 
                         ValueNode n = this.bestValueNode;
                         while(n != null){
-                            this.solvedMoves.add(n.parentAction);
+                            if(n.parentAction == null)
+                                break;
+                            solvedMovesStack.add(n.parentAction);
                             n = n.parent;
                         }
                         return;
@@ -171,9 +172,12 @@ public class AStarStategy extends AbstractStrategy
                             System.out.println("[A*] Game solved.");
                             ValueNode n = this.bestValueNode;
                             while(n != null){
-                                this.solvedMoves.add(n.parentAction);
+                                if(n.parentAction == null)
+                                    break;
+                                solvedMovesStack.add(n.parentAction);
                                 n = n.parent;
                             }
+
                             return;
                         }
                     }
