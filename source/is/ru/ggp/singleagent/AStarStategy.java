@@ -47,7 +47,6 @@ public class AStarStategy extends AbstractStrategy
         this.heuristic = HeuristicFactory.getRelaxation();
     }
     
-    @Override
     public void initMatch(Match initMatch){
         super.initMatch(initMatch);
         System.out.println("[A*] InitMatch executed.");
@@ -64,8 +63,7 @@ public class AStarStategy extends AbstractStrategy
         this.astar();
     }
     
-    @Override
-	public IMove getMove(IGameNode currentNode) 
+	public IMove getMove(IGameNode currentNode)
     {
 
         // Check if we have already solved the game
@@ -73,6 +71,8 @@ public class AStarStategy extends AbstractStrategy
             IMove returnMove = this.solvedMovesStack.pop();
             return returnMove;
         }
+
+        hasNotMovedYet = true;
 
         // Check if we want to continue the search from the init match phase.
     	// This will only be for the first time to combine the start time and the
@@ -83,34 +83,41 @@ public class AStarStategy extends AbstractStrategy
         }
     	else{
     		continueSearch = false;
-    	}
-
-
-        // Do A* search.
+        }
 
         this.astar();
+        
+        IMove returnMove = null;
 
-        // reconstuct nota fremstu
         if(this.bestValueNode !=null){
-            hasNotMovedYet = true;
-            return this.reconstructPathFromNode(this.bestValueNode).pop();
-
-
-
+            if(this.bestValueNode.getGoalValue() == 100)
+            {
+                ValueNode n = this.bestValueNode;
+                while(n != null)
+                {
+                    if(n == node || n.getStateId() == node.getStateId())
+                    {
+                        System.out.print("!!! WE CAN CONSTRUCT PATH TO 100 GOAL FROM OUR CURRENT PATH!");
+                    }
+                }
+            }
+            
+            returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+            this.closedList.clear();
+            this.openList.clear();
+            this.bestValueNode = null;
+            return returnMove;
         }
         else{
-            System.out.println("PICK NODE FROM FRINGE!!!!");
+            returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+            this.closedList.clear();
+            this.openList.clear();
+            this.bestValueNode = null;
+            return returnMove;
+
         }
-
-        // we clear the open and close list.
-        this.closedList.clear();
-        this.openList.clear();
-        hasNotMovedYet = true;
-        return this.mock(currentNode);
 	}
-
-
-
+    
     private Stack<IMove> reconstructPathFromNode(ValueNode node){
         Stack<IMove> pathStack = new Stack<IMove>(); 
         ValueNode n = node;
@@ -123,35 +130,7 @@ public class AStarStategy extends AbstractStrategy
         return pathStack;
     }
 
-
-
-
-
-
-
-
-
-    private IMove mock(IGameNode currentNode)
-    {
-            	/** XXX: All strategy relevant code goes in here. */
-        try {
-            List<IMove[]> moves = match.getGame().getCombinedMoves(currentNode);
-            return moves.get( random.nextInt( moves.size() ) )[playerNumber];
-        }
-        catch (InterruptedException e) {
-            System.out.println("getMove() stopped by time.");
-        }
-
-        return null;
-    }
-
-
-
-
-
-
-
-
+    
     private void astar(){
     	int bestTerminalValue = -1;
     	
@@ -179,7 +158,7 @@ public class AStarStategy extends AbstractStrategy
                     if(this.bestValueNode.getGoalValue() == 100)
                     {
                         this.solved = true;
-                        System.out.println("[A*] Game solved.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+                        System.out.println("[A*] Game solved.");
                         this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                         return;
                     }
@@ -192,7 +171,7 @@ public class AStarStategy extends AbstractStrategy
                         System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if(this.bestValueNode.getGoalValue() == 100){
                             this.solved = true;
-                            System.out.println("[A*] Game solved.!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            System.out.println("[A*] Game solved.");
                             ValueNode n = this.bestValueNode;
                             this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
 
@@ -242,21 +221,6 @@ public class AStarStategy extends AbstractStrategy
                         }
                         // put all the nodes on the open list.
                     }
-
-
-                    /*
-                    if(!this.closedList.contains(nextNode)){
-                        // calculate the h value
-                        double hValue =  nextNode.h;
-
-                        // If the new node is not in the open list, then we add it.
-                        boolean isBest;
-                        if(!this.openList.contains(nextNode))
-                            this.openList.add(nextNode);
-                        else{    
-                        }
-                    }
-                    */
                 }
 				
 			} catch (InterruptedException e) {
