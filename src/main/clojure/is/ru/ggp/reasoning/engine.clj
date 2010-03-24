@@ -72,16 +72,28 @@
      :next-states next-states, :legal-moves legal-moves, :goals goals, :terminals terminals}))
 
 
-(defmacro expand-true
+(defmacro expand-true-lookup
   [pred vars]
   (let [epred (eval pred)
-        terms (vec (map #(symbol (str "p" %)) (take (count epred) (iterate inc 0))))
+        terms (map #(if (:var (meta %)) % `(quote ~%)) epred)
+        variables (filter #(:var (meta %)) epred)
+        result (if (not-empty variables) (zipmap (map keyword variables) variables) `(quote ~epred))]
+    `(fn [~'state]
+      (let [~'lookup (~'state (list ~@terms))]
+        (if (not (nil? ~'lookup))
+          ~result)))))
+
+
+(defmacro expand-true-loop
+  [pred vars]
+  (let [epred (eval pred)
+        terms (map #(symbol (str "p" %)) (take (count epred) (iterate inc 0)))
         variables (filter #(:var (meta (second %))) (su/indexed epred))
         constants (filter #(not (:var (meta (second %)))) (su/indexed epred))
         constraints (map #(list '= (symbol (str "p" (first %))) `(quote ~(second %))) constants)
         expr (zipmap (map #(keyword (second %)) variables) (map #(symbol (str "p" (first %))) variables))]
     `(fn [~'state]
-      (for [~'pred ~'state :let [~terms ~'pred] :when (and ~@constraints)] ~expr))))
+      (for [~'pred ~'state :let [[~@terms] ~'pred] :when (and ~@constraints)] ~expr))))
 
 
 ;(defn create-model
