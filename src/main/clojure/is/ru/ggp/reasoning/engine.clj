@@ -73,7 +73,7 @@
 
 
 (defmacro expand-true-lookup
-  [pred vars]
+  [pred]
   (let [epred (eval pred)
         terms (map #(if (:var (meta %)) % `(quote ~%)) epred)
         variables (filter #(:var (meta %)) epred)
@@ -85,7 +85,7 @@
 
 
 (defmacro expand-true-loop
-  [pred vars]
+  [pred bounded-vars]
   (let [epred (eval pred)
         terms (map #(symbol (str "p" %)) (take (count epred) (iterate inc 0)))
         variables (filter #(:var (meta (second %))) (su/indexed epred))
