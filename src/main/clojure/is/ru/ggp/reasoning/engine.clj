@@ -38,7 +38,7 @@
   "Changes symbols which start with ? to keywords without ? character."
   [sym]
   (if (and (symbol? sym) (variable? sym))
-    (keyword (subs (name sym) 1))
+    (symbol (with-meta (subs (name sym) 1) {:var true}))
     sym))
 
 
@@ -71,42 +71,17 @@
     {:roles roles, :initial-state initial-state, :user-defined user-defined-implications,
      :next-states next-states, :legal-moves legal-moves, :goals goals, :terminals terminals}))
 
-;(def smu
-;  (fn [state__5857__auto__]
-;    (clojure.core/for [pred__5858__auto__ state__5857__auto__ :let [[p0 p1 p2 p3] pred__5858__auto__] :when (and (= p0 'cell) (= p3 'b))] {:y 2, 2 1})))
 
 (defmacro expand-true
   [pred vars]
-  (let [param (fn [i] (symbol (format "p%s" i)))
-        ps (vec (map param (take (count pred) (iterate inc 0))))
-        variables (filter #(keyword? (second %)) (su/indexed pred))
-        constants (filter #(not (keyword? (second %))) (su/indexed pred))
-        expr (zipmap (map second variables) (map first variables))]
-    `(fn [state#]
-      (for [pred# state# :let [~ps pred#] :when ~(cons 'and (map #(list '= (symbol (param (first %))) (symbol (str "'" (name (second %))))) constants))] ~expr))))
-; :when ~(cons 'and (map #(list '= (symbol (str "'" (name (second %))))) constants))
-
-; for [pred state :let [[p1 p2 p3 p4] pred] :when (and (= p1 'cell) (= p4 'b))] {:x p2 :y p3})
-;(defmacro create-legal-move
-;  "Create clojure function for a legal move based on a legal move in the game description."
-;  [legal]
-;  `(let [zipper# (z/seq-zip ~legal)
-;         [_# player# action#] (z/left zipper#)
-;         rules# (z/left zipper#)]
-;    (println (z/node zipper#))
-;    (fn [state player]
-;      (domonad maybe-m
-;        []))))
-
-
-
-;  `(let [lz# (z/seq-zip ~legal)
-;         [_ player# action#] (z/left lz#)
-;         playvar# (variable? player#)
-;         rules# (z/rights (z/left lz#))
-;         all-rules# (zf/descendants legal#)]
-;    (println ~legal)
-;    lz#))
+  (let [epred (eval pred)
+        terms (vec (map #(symbol (str "p" %)) (take (count epred) (iterate inc 0))))
+        variables (filter #(:var (meta (second %))) (su/indexed epred))
+        constants (filter #(not (:var (meta (second %)))) (su/indexed epred))
+        constraints (map #(list '= (symbol (str "p" (first %))) `(quote ~(second %))) constants)
+        expr (zipmap (map #(keyword (second %)) variables) (map #(symbol (str "p" (first %))) variables))]
+    `(fn [~'state]
+      (for [~'pred ~'state :let [~terms ~'pred] :when (and ~@constraints)] ~expr))))
 
 
 ;(defn create-model
