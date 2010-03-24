@@ -31,8 +31,8 @@ public class AStarStategy extends AbstractStrategy
     private IHeuristic heuristic;
 
     private boolean solved = false;
+    private boolean hasNotMovedYet = false;
     private ValueNode bestValueNode = null;
-    List<IMove> solvedMoves = new LinkedList();
     Stack<IMove> solvedMovesStack = new Stack<IMove>();
     // flag used if we have found a new the best path.
 
@@ -69,7 +69,7 @@ public class AStarStategy extends AbstractStrategy
     {
 
         // Check if we have already solved the game
-        if(this.solved){
+        if(this.solved && !this.hasNotMovedYet){
             IMove returnMove = this.solvedMovesStack.pop();
             return returnMove;
         }
@@ -90,19 +90,46 @@ public class AStarStategy extends AbstractStrategy
 
         this.astar();
 
+        // reconstuct nota fremstu
         if(this.bestValueNode !=null){
-         // reconstuct nota fremstu
+            hasNotMovedYet = true;
+            return this.reconstructPathFromNode(this.bestValueNode).pop();
+
+
+
         }
         else{
-            // pick best from fringe!
+            System.out.println("PICK NODE FROM FRINGE!!!!");
         }
 
         // we clear the open and close list.
         this.closedList.clear();
         this.openList.clear();
-
+        hasNotMovedYet = true;
         return this.mock(currentNode);
 	}
+
+
+
+    private Stack<IMove> reconstructPathFromNode(ValueNode node){
+        Stack<IMove> pathStack = new Stack<IMove>(); 
+        ValueNode n = node;
+        while(n != null){
+            if(n.parentAction == null)
+                break;
+           pathStack.add(n.parentAction);
+            n = n.parent;
+        }
+        return pathStack;
+    }
+
+
+
+
+
+
+
+
 
     private IMove mock(IGameNode currentNode)
     {
@@ -152,15 +179,8 @@ public class AStarStategy extends AbstractStrategy
                     if(this.bestValueNode.getGoalValue() == 100)
                     {
                         this.solved = true;
-                        System.out.println("[A*] Game solved.");
-
-                        ValueNode n = this.bestValueNode;
-                        while(n != null){
-                            if(n.parentAction == null)
-                                break;
-                            solvedMovesStack.add(n.parentAction);
-                            n = n.parent;
-                        }
+                        System.out.println("[A*] Game solved.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+                        this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                         return;
                     }
                 }
@@ -172,14 +192,9 @@ public class AStarStategy extends AbstractStrategy
                         System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if(this.bestValueNode.getGoalValue() == 100){
                             this.solved = true;
-                            System.out.println("[A*] Game solved.");
+                            System.out.println("[A*] Game solved.!!!!!!!!!!!!!!!!!!!!!!!!!");
                             ValueNode n = this.bestValueNode;
-                            while(n != null){
-                                if(n.parentAction == null)
-                                    break;
-                                solvedMovesStack.add(n.parentAction);
-                                n = n.parent;
-                            }
+                            this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
 
                             return;
                         }
