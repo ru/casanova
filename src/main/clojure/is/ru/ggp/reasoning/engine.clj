@@ -87,11 +87,14 @@
 (defmacro expand-true-loop
   [pred bounded-vars]
   (let [epred (eval pred)
+        ebounded-vars (eval bounded-vars)
         terms (map #(symbol (str "p" %)) (take (count epred) (iterate inc 0)))
         variables (filter #(:var (meta (second %))) (su/indexed epred))
+        bounded-variables (filter #(ebounded-vars (second %)) variables)
+        unbounded-variables (filter #(not (ebounded-vars (second %))) variables)
         constants (filter #(not (:var (meta (second %)))) (su/indexed epred))
         constraints (map #(list '= (symbol (str "p" (first %))) `(quote ~(second %))) constants)
-        expr (zipmap (map #(keyword (second %)) variables) (map #(symbol (str "p" (first %))) variables))]
+        expr (zipmap (map #(keyword (second %)) unbounded-variables) (map #(symbol (str "p" (first %))) unbounded-variables))]
     `(fn [~'state]
       (for [~'pred ~'state :let [[~@terms] ~'pred] :when (and ~@constraints)] ~expr))))
 
