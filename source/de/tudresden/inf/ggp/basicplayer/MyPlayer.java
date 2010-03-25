@@ -165,51 +165,13 @@ public final class MyPlayer extends Player {
      */
     public static void main(String[] args){
 
-        StateHash myStateHash = new StateHash();
-
-        String myState1[] = { "(cell 1 1 b)", "(cell 1 2 b)", "(cell 1 3 b)",
-                              "(cell 2 1 b)", "(cell 2 2 b)", "(cell 2 3 b)",
-                              "(cell 3 1 b)", "(cell 3 2 b)", "(cell 3 3 b)"};
-
-        String myState2[] = { "(cell 1 1 x)", "(cell 1 2 b)", "(cell 1 3 b)",
-                              "(cell 2 1 b)", "(cell 2 2 b)", "(cell 2 3 b)",
-                              "(cell 3 1 b)", "(cell 3 2 b)", "(cell 3 3 b)"};
-
-        String myState3[] = { "(cell 1 1 x)", "(cell 1 2 b)", "(cell 1 3 b)",
-                              "(cell 2 1 b)", "(cell 2 2 o)", "(cell 2 3 b)",
-                              "(cell 3 1 b)", "(cell 3 2 b)", "(cell 3 3 b)"};
-
-        int[] myState1ID = myStateHash.pushState(myState1);
-        int[] myState2ID = myStateHash.pushState(myState2);
-        int[] myState3ID = myStateHash.pushState(myState3);
-
-        String[] myState1Compounds = myStateHash.pullState(myState1ID);
-        String[] myState2Compounds = myStateHash.pullState(myState2ID);
-        String[] myState3Compounds = myStateHash.pullState(myState3ID);
-
-        System.out.print("State 1 = ");    for (String s : myState1) System.out.print(s + " "); System.out.println();
-        System.out.print("State 1 = ");    for (String s : myState1Compounds) System.out.print(s + " "); System.out.println();
-        System.out.print("State 1 ID = "); for (int i : myState1ID) System.out.print(i); System.out.println();
-
-        System.out.println();
-        System.out.print("State 2 = ");    for (String s : myState2) System.out.print(s + " "); System.out.println();
-        System.out.print("State 2 = ");    for (String s : myState2Compounds) System.out.print(s + " "); System.out.println();
-        System.out.print("State 2 ID = "); for (int i : myState2ID) System.out.print(i); System.out.println();
-
-        System.out.println();
-        System.out.print("State 3 = ");    for (String s : myState3) System.out.print(s + " "); System.out.println();
-        System.out.print("State 3 = ");    for (String s : myState3Compounds) System.out.print(s + " "); System.out.println();
-        System.out.print("State 3 ID = "); for (int i : myState3ID) System.out.print(i); System.out.println();
-
-
-
-        /* create and start player server */
-    	/*try {
+       /* create and start player server */
+        try {
     		new PlayerServer( new MyPlayer(), 
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(-1);
-        }*/
+        }
     }
 }

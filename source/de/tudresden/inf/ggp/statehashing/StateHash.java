@@ -1,4 +1,6 @@
 package de.tudresden.inf.ggp.basicplayer;
+import org.eclipse.palamedes.gdl.core.model.IGameState;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -10,8 +12,8 @@ import java.util.Hashtable;
  */
 public class StateHash
 {
-    Hashtable m_compoundHashTable = new Hashtable();
-    ArrayList<String> m_compoundVector = new ArrayList<String>();
+    private Hashtable m_compoundHashTable = new Hashtable();
+    private ArrayList<String> m_compoundVector = new ArrayList<String>();
 
     /*
      * Constructor
