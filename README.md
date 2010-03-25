@@ -64,7 +64,7 @@ at the [maven website](http://maven.apache.org) get up and running with maven.
 
 #### If you want to use eclipse
 
-First, you need to install [m2eclipse](http://m2eclipse.sonatype.org).
+First, you need to install [m2eclipse](http://m2eclipse.sonatype.org). (Eclipse update site: http://m2eclipse.sonatype.org/sites/m2e)
 
 You can use maven to generate an eclipse project for you by running
 
@@ -83,3 +83,11 @@ You can create a new project from a maven project in IntelliJ by doing
 > File -> New Project -> Import project from external model -> Maven
 
 and point to the directory which you checked out earlier.
+
+Running a test match
+--------------------
+In order to run a test match with your player you must run a gamecontroller server. We've added the JAR, two example GDL's and an example shell script to a "test" folder under the repository root.
+
+This is the command where  gdl/connect4.gdl is the game description in a match between a random player and a player running on localhost at port 4001
+
+>  java -jar gamecontroller-cli-r360.jar Test gdl/connect4.gdl 10 10 -remote 1 YB localhost 4001
