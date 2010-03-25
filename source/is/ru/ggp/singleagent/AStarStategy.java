@@ -100,22 +100,16 @@ public class AStarStategy extends AbstractStrategy
                         System.out.print("!!! WE CAN CONSTRUCT PATH TO 100 GOAL FROM OUR CURRENT PATH!");
                     }
                 }
-            }
-            
+            }       
             returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
-            this.closedList.clear();
-            this.openList.clear();
-            this.bestValueNode = null;
-            return returnMove;
         }
         else{
             returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
-            this.closedList.clear();
-            this.openList.clear();
-            this.bestValueNode = null;
-            return returnMove;
-
         }
+        this.closedList.clear();
+        this.openList.clear();
+        this.bestValueNode = null;
+        return returnMove;
 	}
     
     private Stack<IMove> reconstructPathFromNode(ValueNode node){
