@@ -163,9 +163,9 @@ public final class MyPlayer extends Player {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args){
-
-    	/* create and start player server */
-    	try {    		
+         
+        /* create and start player server */
+    	try {
     		new PlayerServer( new MyPlayer(), 
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
@@ -173,5 +173,4 @@ public final class MyPlayer extends Player {
             System.exit(-1);
         }
     }
-
 }
