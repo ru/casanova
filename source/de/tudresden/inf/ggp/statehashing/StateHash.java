@@ -22,18 +22,24 @@ public class StateHash
     /*
      * Returns a string which represents a state from the hash key (bit-string in an integer array) from the input.
      */
-    public String pullState(int[] hashKey)
+    public String[] pullState(int[] hashKey)
     {
-        String returnString = "";
-
-        for(int i=0; i<hashKey.length; i++)
-        {
+        int index = 0;
+        String tempString[] = new String[hashKey.length];
+        
+        // Find the compound sentences in the vector
+        for(int i=0; i<hashKey.length; i++) {
             if (hashKey[i] == 1) {
-                returnString += m_compoundVector.get(i) + " ";
+                tempString[index] = m_compoundVector.get(i);
+                index++;
             }
         }
 
-        return returnString;
+        // Create a string array to return
+        String[] stringToReturn = new String[index];
+        System.arraycopy(tempString, 0, stringToReturn, 0, index);
+
+        return stringToReturn;
     }
 
                                                                                                                   
@@ -42,9 +48,10 @@ public class StateHash
      */
     public int[] pushState(String compoundStatements[])
     {
-        int index;
+        int index = 0;
         int[] stateID = new int[compoundStatements.length + m_compoundVector.size()];
 
+        /* Create a state array */
         // For each string in the array...
         for (String c : compoundStatements) {
 
@@ -64,8 +71,20 @@ public class StateHash
             stateID[index] = 1;
         }
 
-        // TODO: Trim the size of the array which is returned!
+        
+        /* Trim the size of the array which is returned! */
+        // Find the last 1 in the stateID
+        for (int i = stateID.length-1; i > -1; i--) {
+            if (stateID[i] == 1) {
+                index = i;
+                break;
+            }
+        }
 
-        return stateID;
+        // Copy the relevant part of the bit string to the return array
+        int[] stateToReturn = new int[index+1];
+        System.arraycopy(stateID, 0, stateToReturn, 0, index+1);
+
+        return stateToReturn;
     }
 }
