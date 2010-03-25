@@ -12,4 +12,5 @@ public interface IClosedList {
 	void add(ValueNode node);
 	void removeFromList(String stateId);
 	boolean contains(ValueNode node);
+	int size();
 }

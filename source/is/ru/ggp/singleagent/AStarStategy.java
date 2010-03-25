@@ -71,7 +71,6 @@ public class AStarStategy extends AbstractStrategy
             IMove returnMove = this.solvedMovesStack.pop();
             return returnMove;
         }
-
         hasNotMovedYet = true;
 
         // Check if we want to continue the search from the init match phase.
@@ -89,23 +88,16 @@ public class AStarStategy extends AbstractStrategy
         
         IMove returnMove = null;
 
-        if(this.bestValueNode !=null){
-            if(this.bestValueNode.getGoalValue() == 100)
-            {
-                ValueNode n = this.bestValueNode;
-                while(n != null)
-                {
-                    if(n == node || n.getStateId() == node.getStateId())
-                    {
-                        System.out.print("!!! WE CAN CONSTRUCT PATH TO 100 GOAL FROM OUR CURRENT PATH!");
-                    }
-                }
-            }       
+        if(this.bestValueNode !=null){                   
+            System.out.println("Notum best value node: " + this.bestValueNode.getGoalValue());
             returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+            System.out.println("ReturnMove:"+returnMove);
         }
         else{
-            returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+            System.out.println("VEljum fra most prominent.");
+        	returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
         }
+        System.out.println("Move returned:"+returnMove);
         this.closedList.clear();
         this.openList.clear();
         this.bestValueNode = null;
@@ -116,6 +108,7 @@ public class AStarStategy extends AbstractStrategy
         Stack<IMove> pathStack = new Stack<IMove>(); 
         ValueNode n = node;
         while(n != null){
+        	//System.out.println("Parent Action:"+n.parentAction);
             if(n.parentAction == null)
                 break;
            pathStack.add(n.parentAction);
@@ -129,6 +122,7 @@ public class AStarStategy extends AbstractStrategy
     	int bestTerminalValue = -1;
     	
     	System.out.println("[A*] Astar search initalized.");
+    	
     	TimerFlag timer = match.getTimer();
     	 
         IReasoner reasoner = game.getReasoner();

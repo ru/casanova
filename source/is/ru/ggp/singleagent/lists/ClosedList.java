@@ -32,4 +32,8 @@ public class ClosedList implements IClosedList{
 	public boolean contains(ValueNode node) {
 		return this.hashmap.containsKey(node.getStateId());
 	}
+	
+	public int size(){
+		return this.hashmap.size();
+	}
 }
