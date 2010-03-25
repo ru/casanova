@@ -17,7 +17,7 @@ public final class MyPlayer extends Player {
 
 	static {
 		StrategyFactory.getInstance().addDescription(
-							"MyRandomStrategy",
+							"AStarStrategy",
 							AStarStategy.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
@@ -62,7 +62,7 @@ public final class MyPlayer extends Player {
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = StrategyFactory.getInstance().createStrategy("MyRandomStrategy");
+        IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
