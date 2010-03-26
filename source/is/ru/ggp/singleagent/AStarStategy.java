@@ -34,7 +34,7 @@ public class AStarStategy extends AbstractStrategy
     private boolean hasNotMovedYet = false;
     private ValueNode bestValueNode = null;
     Stack<IMove> solvedMovesStack = new Stack<IMove>();
-    // flag used if we have found a new the best path.
+
 
 
     // Constructor for the class
@@ -65,7 +65,6 @@ public class AStarStategy extends AbstractStrategy
     
 	public IMove getMove(IGameNode currentNode)
     {
-
         // Check if we have already solved the game
         if(this.solved && !this.hasNotMovedYet){
             IMove returnMove = this.solvedMovesStack.pop();
@@ -89,12 +88,17 @@ public class AStarStategy extends AbstractStrategy
         IMove returnMove = null;
 
         if(this.bestValueNode !=null){                   
-            System.out.println("Notum best value node: " + this.bestValueNode.getGoalValue());
+            System.out.println("[A*] Using best value node with value: " + this.bestValueNode.getGoalValue());
+            if(this.bestValueNode.getGoalValue() == 100){
+                this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
+                this.hasNotMovedYet = false;
+                return this.solvedMovesStack.pop();
+                
+            }
             returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
-            System.out.println("ReturnMove:"+returnMove);
         }
         else{
-            System.out.println("VEljum fra most prominent.");
+            System.out.println("[A*] We pick move from most prominent");
         	returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
         }
         System.out.println("Move returned:"+returnMove);
@@ -119,17 +123,12 @@ public class AStarStategy extends AbstractStrategy
 
     
     private void astar(){
-    	int bestTerminalValue = -1;
-    	
+        int bestTerminalValue = -1;
+    	String player = game.getRoleNames()[0];
     	System.out.println("[A*] Astar search initalized.");
-    	
     	TimerFlag timer = match.getTimer();
-    	 
         IReasoner reasoner = game.getReasoner();
-        String player = game.getRoleNames()[0];
-
-
-
+        
         while(!this.openList.isEmpty() && bestTerminalValue < 100 ){
     		if(timer.interrupted())
     			return;
@@ -142,6 +141,7 @@ public class AStarStategy extends AbstractStrategy
     		if(node.gameNode.getState().isTerminal()){
                 if(this.bestValueNode == null){
                     System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
+                    bestTerminalValue = node.getGoalValue();
                     this.bestValueNode = node;
                     if(this.bestValueNode.getGoalValue() == 100)
                     {
@@ -152,17 +152,16 @@ public class AStarStategy extends AbstractStrategy
                     }
                 }
                 else{
-                    int goalValue = node.gameNode.getState().getGoalValue(0);
                     // should this be GEQ?
                     if(node.getGoalValue() > this.bestValueNode.getGoalValue()){
                         this.bestValueNode = node;
+                        bestTerminalValue = node.getGoalValue();
                         System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if(this.bestValueNode.getGoalValue() == 100){
                             this.solved = true;
                             System.out.println("[A*] Game solved.");
                             ValueNode n = this.bestValueNode;
                             this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
-
                             return;
                         }
                     }
