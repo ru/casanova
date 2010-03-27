@@ -3,13 +3,17 @@ package is.ru.ggp.singleagent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import is.ru.ggp.singleagent.heuristic.HeuristicFactory;
 import is.ru.ggp.singleagent.heuristic.IHeuristic;
+import org.eclipse.palamedes.gdl.core.ast.RuleGoal;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.model.IReasoner;
+import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
@@ -21,6 +25,7 @@ import org.eclipse.palamedes.gdl.core.simulation.TimerFlag;
 import is.ru.ggp.singleagent.lists.ClosedList; 
 import is.ru.ggp.singleagent.lists.OpenList;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
+import org.eclipse.palamedes.kif.core.ast.KIFSeq;
 
 public class AStarStategy extends AbstractStrategy 
 {
@@ -33,24 +38,84 @@ public class AStarStategy extends AbstractStrategy
     private boolean solved = false;
     private boolean hasNotMovedYet = false;
     private ValueNode bestValueNode = null;
-    Stack<IMove> solvedMovesStack = new Stack<IMove>();
-
-
+    private Stack<IMove> solvedMovesStack = new Stack<IMove>();
+    private List<String> goalStatePredicates;
 
     // Constructor for the class
     public AStarStategy(){
         // Create instance of the open and closed list.
         this.closedList = new ClosedList(); 
         this.openList = new OpenList();
-
+        this.goalStatePredicates = new LinkedList<String>();
+        
         // Calculate the heuristic value of the first node.
-        this.heuristic = HeuristicFactory.getRelaxation();
+        this.heuristic = HeuristicFactory.getRelaxation(game);
     }
-    
+
+
+    /**
+     * Function for calculating the goalstate.
+     * For some reason we can't find this in the reasoner
+     * so we must... dig holes through walls and do
+     * nasty things instead.
+     */
+    private void findGoalState(Match match)
+    {
+        Game g = (Game)match.getGame();
+        KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
+
+        for(RuleGoal r : ff){
+            Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
+            Matcher matcher = p.matcher(r.toString());
+
+            if (matcher.find()) {
+                System.out.println("Generating goal state");
+
+                Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
+
+                String[] split = r.toString().split("\n");
+
+                for(int i=1; i<split.length; i++){
+                    String s = split[i].replace("\t", "");
+                    if(functionPattern.matcher(s).find())
+                    {
+                        String[] pr = g.getKB().get(s).getImplicationHead().toString().split("\n");
+                        for(int j = 1; j<pr.length; j++)
+                        {
+                            s = pr[j].replace("\t", "");
+                            s = s.replace("(true ", "");
+                            s = s.substring(0, s.length()-1);
+                            if(s.endsWith("))"))
+                                s = s.substring(0, s.length()-2);
+                            this.goalStatePredicates.add(s);
+                        }
+                        
+                    }
+                    else{
+                        if(s.startsWith("(true "))
+                        {
+                            s = s.replace("(true ", "");
+                            s = s.substring(0, s.length()-1);
+
+                            if(s.endsWith("))"))
+                                s = s.substring(0, s.length()-1);
+                            this.goalStatePredicates.add(s);
+                        }
+                        else{
+                            System.out.println("Error, we must consider the predicate " + s);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void initMatch(Match initMatch){
         super.initMatch(initMatch);
         System.out.println("[A*] InitMatch executed.");
-
+        System.out.println("MyPlayer created the game.");
+        this.findGoalState(initMatch);
+        
         // Create the initial node and calculate the heuristic value
         // and set the cost to 0 (where it is the first node).
         ValueNode node = new ValueNode(initMatch.getCurrentNode(), game); 
@@ -76,7 +141,8 @@ public class AStarStategy extends AbstractStrategy
     	// This will only be for the first time to combine the start time and the
     	// first play time.
     	ValueNode node = new ValueNode(currentNode, game);
-    	if(continueSearch == false){
+       
+        if(continueSearch == false){
     		this.openList.add(node);
         }
     	else{
@@ -135,7 +201,6 @@ public class AStarStategy extends AbstractStrategy
 
             // Pick the best node from the fringe.
     		ValueNode node = this.openList.getMostProminentGameNode();
-            
 
     		// If we find a goal, then we stop the search and then we reconstruct the path.
     		if(node.gameNode.getState().isTerminal()){

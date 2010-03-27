@@ -1,9 +1,16 @@
 package de.tudresden.inf.ggp.basicplayer;
 
+import org.eclipse.palamedes.gdl.core.ast.RuleGoal;
+import org.eclipse.palamedes.gdl.core.model.IFluent;
+import org.eclipse.palamedes.gdl.core.model.utils.GenericFluent;
+import org.eclipse.palamedes.gdl.core.model.utils.TermWrapper;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.regex.*;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.eclipse.palamedes.gdl.connection.Message;
 import org.eclipse.palamedes.gdl.connection.Player;
@@ -13,6 +20,8 @@ import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 import is.ru.ggp.singleagent.AStarStategy;
+import org.eclipse.palamedes.kif.core.ast.KIFSeq;
+
 public final class MyPlayer extends Player {
 
 	static {
@@ -56,9 +65,8 @@ public final class MyPlayer extends Player {
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
         GameFactory factory 	= GameFactory.getInstance();
-        IGame 		runningGame = factory.createGame( GameFactory.JAVAPROVER,
+        Game 		runningGame = (Game)factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
-        System.out.println("MyPlayer created the game.");
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
