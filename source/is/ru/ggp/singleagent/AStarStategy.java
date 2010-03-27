@@ -39,7 +39,6 @@ public class AStarStategy extends AbstractStrategy
     private boolean hasNotMovedYet = false;
     private ValueNode bestValueNode = null;
     private Stack<IMove> solvedMovesStack = new Stack<IMove>();
-    //private List<String> goalStatePredicates;
 
     // Constructor for the class
     public AStarStategy(){
@@ -70,8 +69,7 @@ public class AStarStategy extends AbstractStrategy
         this.astar();
     }
     
-	public IMove getMove(IGameNode currentNode)
-    {
+	public IMove getMove(IGameNode currentNode){
         // Check if we have already solved the game
         if(this.solved && !this.hasNotMovedYet){
             IMove returnMove = this.solvedMovesStack.pop();
@@ -103,7 +101,11 @@ public class AStarStategy extends AbstractStrategy
                 return this.solvedMovesStack.pop();
                 
             }
-            returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+            else if(this.bestValueNode.getGoalValue() >=1)
+                returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+            else
+                returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+
         }
         else{
             System.out.println("[A*] We pick move from most prominent");
@@ -120,7 +122,6 @@ public class AStarStategy extends AbstractStrategy
         Stack<IMove> pathStack = new Stack<IMove>(); 
         ValueNode n = node;
         while(n != null){
-        	//System.out.println("Parent Action:"+n.parentAction);
             if(n.parentAction == null)
                 break;
            pathStack.add(n.parentAction);
@@ -129,33 +130,9 @@ public class AStarStategy extends AbstractStrategy
         return pathStack;
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * A* Search method.
+     */
     private void astar(){
         int bestTerminalValue = -1;
     	String player = game.getRoleNames()[0];
@@ -234,8 +211,7 @@ public class AStarStategy extends AbstractStrategy
                         else // if the node is already on the open list..
                         {
                             ValueNode oldNewNode = this.openList.get(nextNode.getStateId());
-                            if(oldNewNode.g + oldNewNode.h > nextNode.g + oldNewNode.h)
-                            {
+                            if(oldNewNode.g + oldNewNode.h > nextNode.g + oldNewNode.h){
                                 System.out.println("Node is better");
                             }
                         }

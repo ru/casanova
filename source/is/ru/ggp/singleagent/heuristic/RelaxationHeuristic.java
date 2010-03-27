@@ -99,11 +99,21 @@ public class RelaxationHeuristic implements IHeuristic{
         }
 
         // Distance calculated.
+
+
+
         return unsatisfiedGoals;
     }
 
     @Override
     public String getHeuristicName() {
         return "Relaxation with penalty";
-    }   
+    }
+
+    private boolean isGoalsubsetOfSuper(List<String> superState)
+    {
+
+    }
+
+
 }
