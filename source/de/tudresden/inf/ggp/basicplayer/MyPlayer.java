@@ -19,6 +19,8 @@ import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
+import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarloUCT;
+
 import is.ru.ggp.singleagent.AStarStategy;
 import org.eclipse.palamedes.kif.core.ast.KIFSeq;
 
@@ -68,7 +70,8 @@ public final class MyPlayer extends Player {
         Game 		runningGame = (Game)factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
 
-        
+        System.out.println("MyPlayer created the game.");
+
         /** XXX: If you implement another strategy here is the place to instantiate it */
         IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
 
