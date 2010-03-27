@@ -12,13 +12,15 @@ import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
+import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarloUCT;
+
 import is.ru.ggp.singleagent.AStarStategy;
 public final class MyPlayer extends Player {
 
 	static {
 		StrategyFactory.getInstance().addDescription(
-							"AStarStrategy",
-							AStarStategy.class.getCanonicalName(),
+							"SMonteCarloUCT",
+							SMonteCarloUCT.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
 	
@@ -59,10 +61,9 @@ public final class MyPlayer extends Player {
         IGame 		runningGame = factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
         System.out.println("MyPlayer created the game.");
-
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
+        IStrategy strategy = StrategyFactory.getInstance().createStrategy("SMonteCarloUCT");
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
