@@ -83,7 +83,7 @@ public class RelaxationHeuristic implements IHeuristic {
 
     @Override
     public double getHeuristic(ValueNode node) {
-        System.out.println("[A*] calculating heuristic for state");
+        //System.out.println("[A*] calculating heuristic for state");
 
         // Calculating unsatisfied goals.
         int unsatisfiedGoals = 0;
@@ -93,14 +93,15 @@ public class RelaxationHeuristic implements IHeuristic {
                 unsatisfiedGoals += 1;
             }
         }
+     
 
-        System.out.println("--------------");
+        //System.out.println("--------------");
         // Distance calculated.
+        /*
         for(String s:this.goalStatePredicates){
             System.out.println(s);
         }
-
-
+        */
         return unsatisfiedGoals;
     }
 
