@@ -23,32 +23,30 @@ public class RelaxationHeuristic implements IHeuristic {
         this.goalStatePredicates = new LinkedList<String>();
         Game g = (Game) match.getGame();
         KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
-       
+
+        Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
+        Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
         for (RuleGoal r : ff) {
-        	
-            Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
-            Matcher matcher = p.matcher(r.toString());
-            
-        	//GDL Checks
-        	if(r.toString().contains("?"))
-        	{
-        		this.useGoalState = false;
-        		System.out.println("Found grounded GOAL, canceling heuristics.");
-        		return;
-        	}
-        	if(r.toString().toLowerCase().contains("distinct") || r.toString().toLowerCase().contains("not")) {
-        		System.out.println("Found NOT or DISTINCT in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
-        		this.useGoalState = false;
-        		return;
-        	}
-            
-            if (matcher.find()) {
+
+            if (p.matcher(r.toString()).find()) {
                 System.out.println("Generating goal state");
 
-                Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
+
+                //GDL Checks
+                if (r.toString().contains("?")) {
+                    System.out.println(r.toString());
+                    this.useGoalState = false;
+                    System.out.println("Found grounded GOAL, canceling heuristics.");
+                    return;
+                }
+                if (r.toString().toLowerCase().contains("distinct") || r.toString().toLowerCase().contains("not")) {
+                    System.out.println("Found NOT or DISTINCT in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
+                    this.useGoalState = false;
+                    return;
+                }
 
                 String[] split = r.toString().split("\n");
-                
+
                 for (int i = 1; i < split.length; i++) {
                     String s = split[i].replace("\t", "");
                     if (functionPattern.matcher(s).find()) {
@@ -99,39 +97,27 @@ public class RelaxationHeuristic implements IHeuristic {
     public double getHeuristic(ValueNode node) {
         //System.out.println("[A*] calculating heuristic for state");
 
-       	if(!this.useGoalState) {
-       		//System.out.println("useGoalState false");
-    		return 0;
-       	}
-    	
+        if (!this.useGoalState) {
+            //System.out.println("useGoalState false");
+            return 0;
+        }
+
         // Calculating unsatisfied goals.
         int unsatisfiedGoals = 0;
 
-
-
-        for(String s : this.goalStatePredicates)
-        {
+        for (String s : this.goalStatePredicates) {
             boolean found = false;
-            for(IFluent f : node.gameNode.getState().getFluents()){
-                if(f.toString().equals(s)){
+            for (IFluent f : node.gameNode.getState().getFluents()) {
+                if (f.toString().equals(s)) {
                     found = true;
                     break;
                 }
             }
 
-            if(!found)
-                unsatisfiedGoals +=1;
+            if (!found)
+                unsatisfiedGoals += 1;
         }
 
-
-
-     
-
-        //System.out.println("--------------");
-        // Distance calculated.
-
-
-        
         return unsatisfiedGoals;
     }
 

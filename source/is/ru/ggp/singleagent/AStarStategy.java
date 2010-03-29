@@ -114,7 +114,7 @@ public class AStarStategy extends AbstractStrategy {
             	//System.out.println("[A*] We pick move from most prominent");
                 returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
                 if (returnMove == null) {
-                    System.out.println("WTF2");
+                    System.out.println(">> WARNING ACTION WAS NULL!");
                 }
 
         } else {
@@ -227,13 +227,15 @@ public class AStarStategy extends AbstractStrategy {
                         }
                         else // if the node is already on the open list..
                         {
+                            //System.out.println("node was already on open list");
                             ValueNode oldNewNode = this.openList.get(moveNode.getStateId());
+                            //System.out.println("oldNewNode: " + oldNewNode.g + oldNewNode.h);
+                            //System.out.println("moveNode: " + moveNode.g + moveNode.h);
+                            //System.out.println("--------------");
                             //System.out.println(">> here");
                             //if (oldNewNode.g + oldNewNode.h > moveNode.g + moveNode.h) {
-                            if (oldNewNode.g > moveNode.g){
-                            	//this.openList.add(moveNode);
-                                System.out.println(">> Found better than is on openlist.");
-                                //oldNewNode.h = moveNode.h;
+                            if (oldNewNode.g +oldNewNode.h  < moveNode.g + moveNode.h){
+                                //System.out.println(">> Found better than is on openlist.");
                                 oldNewNode.g = moveNode.g;
                                 oldNewNode.parent = moveNode.parent;
                                 oldNewNode.parentAction = moveNode.parentAction;
