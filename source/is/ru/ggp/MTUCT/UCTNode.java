@@ -55,20 +55,17 @@ public class UCTNode
 	{
 		IGameState newState = state;
 		Random myRandom = new Random();
-		synchronized(children)
-		{
-			IMove[] move = new IMove[moves.length];
-			int singledimension = 0;
-			int rand = 0;
-			for(int i=0 ; i < moves.length ; i++)
-			{
-				rand = myRandom.nextInt(moves[i].length-1);
-				move[i] = moves[i][rand];
-			}
-            try{
-			newState = myReasoner.getNextState(state,move);   } catch(Exception e){}
-			children[movesToChildrenIndex(moveIndex)] = new UCTNode(newState,this,moveIndex);
-		}
+        IMove[] move = new IMove[moves.length];
+        int singledimension = 0;
+        int rand = 0;
+        for(int i=0 ; i < moves.length ; i++)
+        {
+            rand = myRandom.nextInt(moves[i].length-1);
+            move[i] = moves[i][rand];
+        }
+        try{
+        newState = myReasoner.getNextState(state,move);   } catch(Exception e){}
+        children[movesToChildrenIndex(moveIndex)] = new UCTNode(newState,this,moveIndex);
 
 
 		IGameState simulState = newState;
@@ -95,18 +92,13 @@ public class UCTNode
 	
 	public void update(int[] moveToUpdate, int[] values)
 	{
-		synchronized(aggregate)
-		{
 			for(int i = 0; i < moveToUpdate.length; i++)
 				aggregate[i][moveToUpdate[i]] += (double)values[i];
-		}
 	}
 	
 	public int[] evaluate(double c)
 	{
 		int[] maxvalueindexes;
-		synchronized(this)
-		{
 			int moveCount = 0, maxvalueindex = 0;
 			double mc_score = 0.0d,uct_max = 0.0d, c_v = 0.0d;
 			maxvalueindexes = new int[moves.length];
@@ -132,8 +124,6 @@ public class UCTNode
 				countVisited[player][maxvalueindex]++;
 			}
 			visits++;
-			
-		}
 		return maxvalueindexes;
 	}
 	
