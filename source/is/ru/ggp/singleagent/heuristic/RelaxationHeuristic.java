@@ -25,31 +25,22 @@ public class RelaxationHeuristic implements IHeuristic {
         KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
        
         for (RuleGoal r : ff) {
+        	
+        	//GDL Checks
         	if(r.toString().contains("?"))
         	{
         		this.useGoalState = false;
         		System.out.println("Found grounded GOAL, canceling heuristics.");
         		return;
         	}
+        	if(r.toString().toLowerCase().contains("distinct") || r.toString().toLowerCase().contains("not")) {
+        		System.out.println("Found NOT or DISTINCT or UngroundedVAR in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
+        		this.useGoalState = false;
+        		return;
+        	}
         	
             Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
             Matcher matcher = p.matcher(r.toString());
-
-            //h4x
-            Pattern pdist = Pattern.compile(".*\\(distinct.*");
-            Pattern pnot = Pattern.compile(".*\\(not.*");
-            Matcher matcherNot = pnot.matcher(r.toString());
-            Matcher matcherDist = pdist.matcher(r.toString());
-            
-            
-            //System.out.println(r.toString());
-            
-            //Does the GDL contain NOT or DISTINCT or Ungrounded Vars?
-            if(matcherNot.find() || matcherDist.find()) {
-            	this.useGoalState = false;
-            	System.out.println("Found NOT or DISTINCT or UngroundedVAR in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
-            	return;
-            }
             
             if (matcher.find() && this.useGoalState) {
                 System.out.println("Generating goal state");
