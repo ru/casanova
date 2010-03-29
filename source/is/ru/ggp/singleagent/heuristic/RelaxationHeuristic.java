@@ -17,24 +17,38 @@ public class RelaxationHeuristic implements IHeuristic {
 
     private List<String> goalStatePredicates = null;
     private IGame game = null;
-
+    private boolean useGoalState = true;
 
     private void findGoalState(Match match) {
         this.goalStatePredicates = new LinkedList<String>();
         Game g = (Game) match.getGame();
         KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
+       
 
         for (RuleGoal r : ff) {
             Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
             Matcher matcher = p.matcher(r.toString());
 
+            //l33t h4x
+            Pattern pdist = Pattern.compile(".*\\(distinct.*");
+            Pattern pnot = Pattern.compile(".*\\(not.*");
+            Matcher matcherNot = pnot.matcher(r.toString());
+            Matcher matcherDist = pdist.matcher(r.toString());
+            
+            //Does the GDL contain NOT or DISTINCT?
+            if(matcherNot.find() || matcherDist.find()) {
+            	this.useGoalState = false;
+            	System.out.println("Found NOT or Distinct function.. Cancel.");
+            	return;
+            }
+            
             if (matcher.find()) {
                 System.out.println("Generating goal state");
 
                 Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
 
                 String[] split = r.toString().split("\n");
-
+                
                 for (int i = 1; i < split.length; i++) {
                     String s = split[i].replace("\t", "");
                     if (functionPattern.matcher(s).find()) {
@@ -85,10 +99,14 @@ public class RelaxationHeuristic implements IHeuristic {
     public double getHeuristic(ValueNode node) {
         //System.out.println("[A*] calculating heuristic for state");
 
+       	if(!this.useGoalState) {
+       		System.out.println("useGoalState false");
+    		return 0;
+       	}
+    	
         // Calculating unsatisfied goals.
         int unsatisfiedGoals = 0;
 
- 
 
 
         for(String s : this.goalStatePredicates)
