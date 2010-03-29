@@ -153,7 +153,7 @@ public class AStarStategy extends AbstractStrategy {
             // If we find a goal, then we stop the search and then we reconstruct the path.
             if (node.gameNode.getState().isTerminal()) {
                 if (this.bestValueNode == null) {
-                    System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
+                    //System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
                     bestTerminalValue = node.getGoalValue();
                     this.bestValueNode = node;
                     if (this.bestValueNode.getGoalValue() == 100) {
@@ -200,7 +200,7 @@ public class AStarStategy extends AbstractStrategy {
                     moveNode.h = this.heuristic.getHeuristic(moveNode);
                     moveNode.g = node.g + 1;
                     double moveNode_heuristic = moveNode.h;
-                    System.out.println("Move node heuristic: " + moveNode_heuristic);
+                    //System.out.println("Move node heuristic: " + moveNode_heuristic);
 
                     moveNode.parent = node;
                     moveNode.parentAction = move;
@@ -208,7 +208,7 @@ public class AStarStategy extends AbstractStrategy {
                     
 
                     if (this.closedList.contains(moveNode)) {
-                        System.out.println("[A*] node already on closed list... go for next one!");
+                        //System.out.println("[A*] node already on closed list... go for next one!");
                     } else {
 
                         // if the new node.

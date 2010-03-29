@@ -88,20 +88,32 @@ public class RelaxationHeuristic implements IHeuristic {
         // Calculating unsatisfied goals.
         int unsatisfiedGoals = 0;
 
-        for (IFluent f : node.gameNode.getState().getFluents()) {
-            if (!this.goalStatePredicates.contains(f.toString())) {
-                unsatisfiedGoals += 1;
+ 
+
+
+        for(String s : this.goalStatePredicates)
+        {
+            boolean found = false;
+            for(IFluent f : node.gameNode.getState().getFluents()){
+                if(f.toString().equals(s)){
+                    found = true;
+                    break;
+                }
             }
+
+            if(!found)
+                unsatisfiedGoals +=1;
         }
+
+
+
      
 
         //System.out.println("--------------");
         // Distance calculated.
-        /*
-        for(String s:this.goalStatePredicates){
-            System.out.println(s);
-        }
-        */
+
+
+        
         return unsatisfiedGoals;
     }
 
