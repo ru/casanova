@@ -24,8 +24,14 @@ public class RelaxationHeuristic implements IHeuristic {
         Game g = (Game) match.getGame();
         KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
        
-
         for (RuleGoal r : ff) {
+        	if(r.toString().contains("?"))
+        	{
+        		this.useGoalState = false;
+        		System.out.println("Found grounded GOAL, canceling heuristics.");
+        		return;
+        	}
+        	
             Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
             Matcher matcher = p.matcher(r.toString());
 
@@ -35,12 +41,13 @@ public class RelaxationHeuristic implements IHeuristic {
             Matcher matcherNot = pnot.matcher(r.toString());
             Matcher matcherDist = pdist.matcher(r.toString());
             
+            
             //System.out.println(r.toString());
             
-            //Does the GDL contain NOT or DISTINCT?
+            //Does the GDL contain NOT or DISTINCT or Ungrounded Vars?
             if(matcherNot.find() || matcherDist.find()) {
             	this.useGoalState = false;
-            	System.out.println("Found NOT or DISTINCT function in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
+            	System.out.println("Found NOT or DISTINCT or UngroundedVAR in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
             	return;
             }
             
