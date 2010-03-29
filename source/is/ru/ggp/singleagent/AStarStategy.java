@@ -50,8 +50,8 @@ public class AStarStategy extends AbstractStrategy {
         //StateAdapter f = (StateAdapter)initMatch.getCurrentNode().getState().getNativeState();
         //f.getFluents();
 
-        System.out.println("[A*] InitMatch executed.");
-        System.out.println("MyPlayer created the game.");
+        //System.out.println("[A*] InitMatch executed.");
+        //System.out.println("MyPlayer created the game.");
 
         // Find the goal predicates from the GDL.
         this.heuristic.readGoalStateFromMatch(match);
@@ -100,21 +100,28 @@ public class AStarStategy extends AbstractStrategy {
                 this.hasNotMovedYet = false;
                 return this.solvedMovesStack.pop();
 
-            } else if (this.bestValueNode.getGoalValue() >= 1) {
-            	System.out.println("[A*] We pick move from best value"+bestValueNode.getGoalValue());
+            } 
+            else if (this.bestValueNode.getGoalValue() >= 30) 
+            {
+            	//System.out.println("[A*] We pick move from best value"+bestValueNode.getGoalValue());
                 returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+                //System.out.println("TRALAALLAAL"+returnMove);
                 if (returnMove == null) {
                     System.out.println("WTF!!");
                 }
-            } else
-            	System.out.println("[A*] We pick move from most prominent");
+            } 
+            else
+            	//System.out.println("[A*] We pick move from most prominent");
                 returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+                if (returnMove == null) {
+                    System.out.println("WTF2");
+                }
 
         } else {
-            System.out.println("[A*] We pick move from most prominent");
+            //System.out.println("[A*] We pick move from most prominent");
             returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
         }
-        System.out.println("Move returned:" + returnMove);
+        //System.out.println("Move returned:" + returnMove);
         this.closedList.clear();
         this.openList.clear();
         this.bestValueNode = null;
@@ -140,7 +147,7 @@ public class AStarStategy extends AbstractStrategy {
         int bestTerminalValue = -1;
         String player = game.getRoleNames()[0];
 
-        System.out.println("[A*] Astar search initalized.");
+        //System.out.println("[A*] Astar search initalized.");
 
         TimerFlag timer = match.getTimer();
         IReasoner reasoner = game.getReasoner();
@@ -155,7 +162,7 @@ public class AStarStategy extends AbstractStrategy {
             // If we find a goal, then we stop the search and then we reconstruct the path.
             if (node.gameNode.getState().isTerminal()) {
                 if (this.bestValueNode == null) {
-                    System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
+                    //System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
                     bestTerminalValue = node.getGoalValue();
                     this.bestValueNode = node;
                     if (this.bestValueNode.getGoalValue() == 100) {
@@ -169,7 +176,7 @@ public class AStarStategy extends AbstractStrategy {
                     if (node.getGoalValue() > this.bestValueNode.getGoalValue()) {
                         this.bestValueNode = node;
                         bestTerminalValue = node.getGoalValue();
-                        System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
+                       // System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if (this.bestValueNode.getGoalValue() == 100) {
                             this.solved = true;
                             System.out.println("[A*] Game solved.");
