@@ -235,7 +235,7 @@ public class AStarStategy extends AbstractStrategy {
                             //System.out.println(">> here");
                             //if (oldNewNode.g + oldNewNode.h > moveNode.g + moveNode.h) {
                             if (oldNewNode.g +oldNewNode.h  < moveNode.g + moveNode.h){
-                                //System.out.println(">> Found better than is on openlist.");
+                                System.out.println(">> Found better than is on openlist.");
                                 oldNewNode.g = moveNode.g;
                                 oldNewNode.parent = moveNode.parent;
                                 oldNewNode.parentAction = moveNode.parentAction;

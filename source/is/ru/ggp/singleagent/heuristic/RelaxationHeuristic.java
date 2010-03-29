@@ -32,18 +32,7 @@ public class RelaxationHeuristic implements IHeuristic {
                 System.out.println("Generating goal state");
 
 
-                //GDL Checks
-                if (r.toString().contains("?")) {
-                    System.out.println(r.toString());
-                    this.useGoalState = false;
-                    System.out.println("Found grounded GOAL, canceling heuristics.");
-                    return;
-                }
-                if (r.toString().toLowerCase().contains("distinct") || r.toString().toLowerCase().contains("not")) {
-                    System.out.println("Found NOT or DISTINCT in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
-                    this.useGoalState = false;
-                    return;
-                }
+
 
                 String[] split = r.toString().split("\n");
 
@@ -75,6 +64,26 @@ public class RelaxationHeuristic implements IHeuristic {
                 }
             }
         }
+
+
+        for(String s : this.goalStatePredicates)
+        {
+                               //GDL Checks
+            if (s.contains("?")) {
+                System.out.println(s);
+                this.useGoalState = false;
+                System.out.println("Found grounded GOAL, canceling heuristics.");
+                return;
+            }
+            if (s.toString().toLowerCase().contains("distinct") || s.toString().toLowerCase().contains("not")) {
+                System.out.println("Found NOT or DISTINCT in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
+                this.useGoalState = false;
+                return;
+            }
+        }
+
+
+
     }
 
     @Override
