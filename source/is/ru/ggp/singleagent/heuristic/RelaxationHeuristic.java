@@ -26,6 +26,9 @@ public class RelaxationHeuristic implements IHeuristic {
        
         for (RuleGoal r : ff) {
         	
+            Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
+            Matcher matcher = p.matcher(r.toString());
+            
         	//GDL Checks
         	if(r.toString().contains("?"))
         	{
@@ -34,15 +37,12 @@ public class RelaxationHeuristic implements IHeuristic {
         		return;
         	}
         	if(r.toString().toLowerCase().contains("distinct") || r.toString().toLowerCase().contains("not")) {
-        		System.out.println("Found NOT or DISTINCT or UngroundedVAR in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
+        		System.out.println("Found NOT or DISTINCT in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
         		this.useGoalState = false;
         		return;
         	}
-        	
-            Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
-            Matcher matcher = p.matcher(r.toString());
             
-            if (matcher.find() && this.useGoalState) {
+            if (matcher.find()) {
                 System.out.println("Generating goal state");
 
                 Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
