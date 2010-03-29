@@ -199,7 +199,7 @@ public class AStarStategy extends AbstractStrategy {
 
                     moveNode.h = this.heuristic.getHeuristic(moveNode);
                     moveNode.g = node.g + 1;
-                    double moveNode_heuristic = moveNode.h;
+                    //double moveNode_heuristic = moveNode.h;
                     //System.out.println("Move node heuristic: " + moveNode_heuristic);
 
                     moveNode.parent = node;
@@ -220,9 +220,16 @@ public class AStarStategy extends AbstractStrategy {
                         {
                             ValueNode oldNewNode = this.openList.get(moveNode.getStateId());
                             //System.out.println(">> here");
-                            if (oldNewNode.g + oldNewNode.h > moveNode.g + moveNode.h) {
-                                System.out.println(">> Found better on openlist.");
+                            //if (oldNewNode.g + oldNewNode.h > moveNode.g + moveNode.h) {
+                            if (oldNewNode.g > moveNode.g){
+                            	//this.openList.add(moveNode);
+                                System.out.println(">> Found better than is on openlist.");
+                                //oldNewNode.h = moveNode.h;
+                                oldNewNode.g = moveNode.g;
+                                oldNewNode.parent = moveNode.parent;
+                                oldNewNode.parentAction = moveNode.parentAction;
                             }
+
                         }
                     }
                 }
