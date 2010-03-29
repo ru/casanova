@@ -101,11 +101,13 @@ public class AStarStategy extends AbstractStrategy {
                 return this.solvedMovesStack.pop();
 
             } else if (this.bestValueNode.getGoalValue() >= 1) {
+            	System.out.println("[A*] We pick move from best value"+bestValueNode.getGoalValue());
                 returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
                 if (returnMove == null) {
                     System.out.println("WTF!!");
                 }
             } else
+            	System.out.println("[A*] We pick move from most prominent");
                 returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
 
         } else {
@@ -153,7 +155,7 @@ public class AStarStategy extends AbstractStrategy {
             // If we find a goal, then we stop the search and then we reconstruct the path.
             if (node.gameNode.getState().isTerminal()) {
                 if (this.bestValueNode == null) {
-                    //System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
+                    System.out.println("[A*] Found the first goal value: " + node.getGoalValue());
                     bestTerminalValue = node.getGoalValue();
                     this.bestValueNode = node;
                     if (this.bestValueNode.getGoalValue() == 100) {
