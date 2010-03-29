@@ -38,7 +38,7 @@
   "Changes symbols which start with ? to keywords without ? character."
   [sym]
   (if (and (symbol? sym) (variable? sym))
-    (symbol (with-meta (subs (name sym) 1) {:var true}))
+    (with-meta (symbol (subs (name sym) 1)) {:var true})
     sym))
 
 
@@ -60,12 +60,12 @@
         roles (map second (filter-when-first 'role gdl))
         initial-state (map second (filter-when-first 'init gdl))
         special-implications? #{'next 'legal 'goal 'terminal}
-        implications (map rest (filter-when-first '<= gdl))
         implication-name (fn [i] (if (coll? (first i)) (ffirst i) (first i)))
+        implications (map rest (filter-when-first '<= gdl))
         special-implications (filter #(special-implications? (implication-name %)) implications)
         user-defined-implications (filter #(not (special-implications? (implication-name %))) implications)
         next-states (filter #(= 'next (implication-name %)) special-implications)
-        legal-moves (map first (filter #(= 'legal (implication-name %)) special-implications))
+        legal-moves (filter #(= 'legal (implication-name %)) special-implications)
         goals (map first (filter #(= 'goal (implication-name %)) special-implications))
         terminals (filter #(= 'terminal (implication-name %)) special-implications)]
     {:roles roles, :initial-state initial-state, :user-defined user-defined-implications,
@@ -92,7 +92,7 @@
         variables (filter #(:var (meta (second %))) (su/indexed epred))
         bounded-variables (filter #(ebounded-vars (second %)) variables)
         unbounded-variables (filter #(not (ebounded-vars (second %))) variables)
-        constants (filter #(not (:var (meta (second %)))) (su/indexed epred))
+        constants (concat (filter #(not (:var (meta (second %)))) (su/indexed epred)) (map #(list (first %) (ebounded-vars (second %))) bounded-variables))
         constraints (map #(list '= (symbol (str "p" (first %))) `(quote ~(second %))) constants)
         expr (zipmap (map #(keyword (second %)) unbounded-variables) (map #(symbol (str "p" (first %))) unbounded-variables))]
     `(fn [~'state]
@@ -103,6 +103,26 @@
 ;  "Creates a clojure model of an game description."
 ;  [gdl]
 ;  )
+
+
+
+(defmacro create-legal
+  [legal]
+  "Creates a function which evaluates legal moves based on the description of the legal predicate."
+  (let [elegal (eval legal)
+        head ((comp rest first) elegal)
+        body (rest elegal)
+        player (first head)
+        action (second head)]
+    ;(println "head" head#)
+    ;(println "body" body#)
+    ;(println "player" player# "meta" (meta player#))
+    ;(println "action" action# "meta" (map meta action#))
+    (if (:var (meta player))
+      `(fn [~'state ~'player] true)
+      `(fn [~'state ~'player]
+        (if (= (quote ~player) ~'player)
+          true)))))
 
 ;(defn legal
 ;  "Returns the legal moves a player in a given state."
