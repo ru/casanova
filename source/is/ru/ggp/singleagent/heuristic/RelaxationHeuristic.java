@@ -29,20 +29,22 @@ public class RelaxationHeuristic implements IHeuristic {
             Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
             Matcher matcher = p.matcher(r.toString());
 
-            //l33t h4x
+            //h4x
             Pattern pdist = Pattern.compile(".*\\(distinct.*");
             Pattern pnot = Pattern.compile(".*\\(not.*");
             Matcher matcherNot = pnot.matcher(r.toString());
             Matcher matcherDist = pdist.matcher(r.toString());
             
+            //System.out.println(r.toString());
+            
             //Does the GDL contain NOT or DISTINCT?
             if(matcherNot.find() || matcherDist.find()) {
             	this.useGoalState = false;
-            	System.out.println("Found NOT or Distinct function.. Cancel.");
+            	System.out.println("Found NOT or DISTINCT function in GOAL. EVERYONE SCREAM! Canceling the heuristics..");
             	return;
             }
             
-            if (matcher.find()) {
+            if (matcher.find() && this.useGoalState) {
                 System.out.println("Generating goal state");
 
                 Pattern functionPattern = Pattern.compile("^[a-zA-Z]*$");
@@ -100,7 +102,7 @@ public class RelaxationHeuristic implements IHeuristic {
         //System.out.println("[A*] calculating heuristic for state");
 
        	if(!this.useGoalState) {
-       		System.out.println("useGoalState false");
+       		//System.out.println("useGoalState false");
     		return 0;
        	}
     	
