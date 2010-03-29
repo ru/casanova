@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RelaxationHeuristic implements IHeuristic{
+public class RelaxationHeuristic implements IHeuristic {
 
     private List<String> goalStatePredicates = null;
     private IGame game = null;
 
 
-    private void findGoalState(Match match){
+    private void findGoalState(Match match) {
         this.goalStatePredicates = new LinkedList<String>();
-        Game g = (Game)match.getGame();
+        Game g = (Game) match.getGame();
         KIFSeq<RuleGoal> ff = g.getKB().getGameAST().getRawRuleGoal();
 
-        for(RuleGoal r : ff){
+        for (RuleGoal r : ff) {
             Pattern p = Pattern.compile(".*goal [a-zA-Z0-9]+ 100.*");
             Matcher matcher = p.matcher(r.toString());
 
@@ -35,33 +35,28 @@ public class RelaxationHeuristic implements IHeuristic{
 
                 String[] split = r.toString().split("\n");
 
-                for(int i=1; i<split.length; i++){
+                for (int i = 1; i < split.length; i++) {
                     String s = split[i].replace("\t", "");
-                    if(functionPattern.matcher(s).find())
-                    {
+                    if (functionPattern.matcher(s).find()) {
                         String[] pr = g.getKB().get(s).getImplicationHead().toString().split("\n");
-                        for(int j = 1; j<pr.length; j++)
-                        {
+                        for (int j = 1; j < pr.length; j++) {
                             s = pr[j].replace("\t", "");
                             s = s.replace("(true ", "");
-                            s = s.substring(0, s.length()-1);
-                            if(s.endsWith("))"))
-                                s = s.substring(0, s.length()-2);
+                            s = s.substring(0, s.length() - 1);
+                            if (s.endsWith("))"))
+                                s = s.substring(0, s.length() - 2);
                             this.goalStatePredicates.add(s);
                         }
 
-                    }
-                    else{
-                        if(s.startsWith("(true "))
-                        {
+                    } else {
+                        if (s.startsWith("(true ")) {
                             s = s.replace("(true ", "");
-                            s = s.substring(0, s.length()-1);
+                            s = s.substring(0, s.length() - 1);
 
-                            if(s.endsWith("))"))
-                                s = s.substring(0, s.length()-1);
+                            if (s.endsWith("))"))
+                                s = s.substring(0, s.length() - 1);
                             this.goalStatePredicates.add(s);
-                        }
-                        else{
+                        } else {
                             System.out.println("Error, we must consider the predicate " + s);
                         }
                     }
@@ -78,9 +73,10 @@ public class RelaxationHeuristic implements IHeuristic{
     /**
      * Constructor for the Relaxation heuristic
      * class.
+     *
      * @param game Accepts instance of IGame.
      */
-    public RelaxationHeuristic(IGame game){
+    public RelaxationHeuristic(IGame game) {
         this.game = game;
     }
 
@@ -92,14 +88,17 @@ public class RelaxationHeuristic implements IHeuristic{
         // Calculating unsatisfied goals.
         int unsatisfiedGoals = 0;
 
-        for(IFluent f : node.gameNode.getState().getFluents()){
-            if(!this.goalStatePredicates.contains(f.toString())){
+        for (IFluent f : node.gameNode.getState().getFluents()) {
+            if (!this.goalStatePredicates.contains(f.toString())) {
                 unsatisfiedGoals += 1;
             }
         }
 
+        System.out.println("--------------");
         // Distance calculated.
-
+        for(String s:this.goalStatePredicates){
+            System.out.println(s);
+        }
 
 
         return unsatisfiedGoals;
@@ -110,10 +109,12 @@ public class RelaxationHeuristic implements IHeuristic{
         return "Relaxation with penalty";
     }
 
-    private boolean isGoalsubsetOfSuper(List<String> superState)
-    {
 
+    private boolean isGoalsubsetOfSuper(List<String> superState) {
+        for (String s : this.goalStatePredicates) {
+            if (!superState.contains(s))
+                return false;
+        }
+        return true;
     }
-
-
 }
