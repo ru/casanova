@@ -25,6 +25,8 @@ public class UCTStrategySingleThread
     public void advanceRoot(IMove[] validated)
     {
         root = root.progress(validated);
+        root.parent = null;
+        root.parentpointer = null;
         System.gc();
     }
 	
