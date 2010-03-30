@@ -23,13 +23,11 @@ public class StateHash
      */
     private StateHash() {}
 
-    private static class stateHolder
-    {
+    private static class stateHolder {
         private static final StateHash INSTANCE = new StateHash();
     }
 
-    public static StateHash getInstance()
-    {
+    public static StateHash getInstance() {
         return stateHolder.INSTANCE;
     }
 
@@ -71,11 +69,13 @@ public class StateHash
         /* Create a state array */
         // For each string in the array...
         for (IFluent c : fluents) {
+
             int c_hash = c.hashCode();
             // If the compound is already in the vector..
             if (m_compoundHashMap.containsKey(c_hash)) {
                 index = m_compoundHashMap.get(c_hash);
             }
+
             // If the compound is not in the vector...
             else {
                 index = m_compoundVector.size();
@@ -119,7 +119,7 @@ public class StateHash
     }
 
     /*
-     * @return an integer from the stateID integer array
+     * @return an integer, in reverse order, from the stateID integer array
      */
     public int stateIDToReverseInt(int[] stateID)
     {
