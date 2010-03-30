@@ -1,16 +1,7 @@
-package de.tudresden.inf.ggp.basicplayer;
-
-import org.eclipse.palamedes.gdl.core.ast.RuleGoal;
-import org.eclipse.palamedes.gdl.core.model.IFluent;
-import org.eclipse.palamedes.gdl.core.model.utils.GenericFluent;
-import org.eclipse.palamedes.gdl.core.model.utils.TermWrapper;
-import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
+package is.ru.ggp;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.*;
-import java.util.List;
-import java.util.LinkedList;
 
 import org.eclipse.palamedes.gdl.connection.Message;
 import org.eclipse.palamedes.gdl.connection.Player;
@@ -19,21 +10,21 @@ import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
-import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarloUCT;
+import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
 import is.ru.ggp.singleagent.AStarStategy;
-import org.eclipse.palamedes.kif.core.ast.KIFSeq;
 
-public final class MyPlayer extends Player {
 
+public class CasanovaPlayer extends Player
+{
 	static {
 		StrategyFactory.getInstance().addDescription(
 							"AStarStrategy",
 							AStarStategy.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
-	
-	
+
+
     /**
      * This method is called when a new match begins.
 	 *
@@ -67,10 +58,10 @@ public final class MyPlayer extends Player {
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
         GameFactory factory 	= GameFactory.getInstance();
-        Game 		runningGame = (Game)factory.createGame( GameFactory.JAVAPROVER,
+        IGame runningGame = factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
-
         System.out.println("MyPlayer created the game.");
+
 
         /** XXX: If you implement another strategy here is the place to instantiate it */
         IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
@@ -92,7 +83,7 @@ public final class MyPlayer extends Player {
         System.out.println( "MyPlayer is prepared to start the game." );
         System.out.println("stats:"+runningGame.getStatistic());
     }
-    
+
 
     /**
      * This method is called once for each move<br/>
@@ -174,10 +165,10 @@ public final class MyPlayer extends Player {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args){
-         
+
         /* create and start player server */
     	try {
-    		new PlayerServer( new MyPlayer(), 
+    		new PlayerServer( new CasanovaPlayer(),
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();

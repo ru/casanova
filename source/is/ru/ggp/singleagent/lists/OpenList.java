@@ -1,12 +1,10 @@
 package is.ru.ggp.singleagent.lists;
 
 import is.ru.ggp.singleagent.common.ValueNode;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class OpenList implements IOpenList {
 
