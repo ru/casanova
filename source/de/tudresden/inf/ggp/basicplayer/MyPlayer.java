@@ -1,6 +1,6 @@
 package de.tudresden.inf.ggp.basicplayer;
 
-import de.tudresden.inf.ggp.basicplayer.StateHash;
+import is.ru.ggp.statehashing.*;
 import org.eclipse.palamedes.gdl.core.model.IFluent;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
