@@ -57,6 +57,9 @@ public class StateHash
         return trimmed;
     }
 
+    /*
+     *
+     */
     public int[] pushState(IGameState state)
     {
         List<String> fluentNames = state.getFluentNames();
@@ -98,5 +101,35 @@ public class StateHash
         System.arraycopy(stateID, 0, trimmed_stateID, 0, index+1);
 
         return trimmed_stateID;
+    }
+
+    /*
+     * @return an integer from the stateID integer array
+     */
+    public int stateIDToInt(int[] stateID)
+    {
+        int integerStateID = 0;
+
+        for (int i : stateID) {
+            integerStateID *= 10;
+            integerStateID += i;
+        }
+
+        return integerStateID;
+    }
+
+    /*
+     * @return an integer from the stateID integer array
+     */
+    public int stateIDToReverseInt(int[] stateID)
+    {
+        int integerStateID = 0;
+
+        for (int i = stateID.length-1; i > 0; i--) {
+            integerStateID += stateID[i];
+            integerStateID *= 10;
+        }
+
+        return integerStateID;
     }
 }

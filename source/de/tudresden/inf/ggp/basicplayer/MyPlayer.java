@@ -1,8 +1,6 @@
 package de.tudresden.inf.ggp.basicplayer;
 
-import is.ru.ggp.statehashing.*;
-import org.eclipse.palamedes.gdl.core.model.IFluent;
-import org.eclipse.palamedes.gdl.core.model.IGameState;
+import org.eclipse.palamedes.gdl.connection.PlayerServer;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
 import java.io.IOException;
@@ -10,7 +8,6 @@ import java.util.*;
 
 import org.eclipse.palamedes.gdl.connection.Message;
 import org.eclipse.palamedes.gdl.connection.Player;
-import org.eclipse.palamedes.gdl.connection.PlayerServer;
 import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
@@ -169,7 +166,7 @@ public final class MyPlayer extends Player {
         
         /* create and start player server */
     	try {
-    		new PlayerServer( new MyPlayer(), 
+    		new PlayerServer( new MyPlayer(),
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();
