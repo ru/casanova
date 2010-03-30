@@ -9,7 +9,7 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.model.IReasoner;
 import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
-import org.eclipse.palamedes.gdl.core.resolver.javaprover.StateAdapter;
+//import org.eclipse.palamedes.gdl.core.resolver.javaprover.StateAdapter;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
 import is.ru.ggp.singleagent.common.ValueNode;
@@ -169,7 +169,7 @@ public class AStarStategy extends AbstractStrategy {
                     this.bestValueNode = node;
                     if (this.bestValueNode.getGoalValue() == 100) {
                         this.solved = true;
-                        System.out.println("[A*] Game solved.");
+                        //System.out.println("[A*] Game solved.");
                         this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                         return;
                     }
@@ -181,8 +181,8 @@ public class AStarStategy extends AbstractStrategy {
                        // System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if (this.bestValueNode.getGoalValue() == 100) {
                             this.solved = true;
-                            System.out.println("[A*] Game solved.");
-                            ValueNode n = this.bestValueNode;
+                            //System.out.println("[A*] Game solved.");
+                            //ValueNode n = this.bestValueNode;
                             this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                             return;
                         }
@@ -232,7 +232,7 @@ public class AStarStategy extends AbstractStrategy {
                         {
                             //System.out.println("node was already on open list");
                             ValueNode oldNewNode = this.openList.get(moveNode.getStateId());
-                            if (oldNewNode.g +oldNewNode.h  > moveNode.g + moveNode.h){
+                            if (oldNewNode.g +oldNewNode.h  < moveNode.g + moveNode.h){
                                 oldNewNode.g = moveNode.g;
                                 oldNewNode.h = moveNode.h;
                                 oldNewNode.parent = moveNode.parent;
