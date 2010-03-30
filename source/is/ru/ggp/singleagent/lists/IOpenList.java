@@ -17,4 +17,6 @@ public interface IOpenList {
     void add(ValueNode node);
 
     ValueNode get(String stringId);
+
+    void reload();
 }

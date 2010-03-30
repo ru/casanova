@@ -80,6 +80,8 @@ public class AStarStategy extends AbstractStrategy {
         // This will only be for the first time to combine the start time and the
         // first play time.
         ValueNode node = new ValueNode(currentNode, game);
+        node.h = this.heuristic.getHeuristic(node);
+        node.g = 0;
 
         if (continueSearch == false) {
             this.openList.add(node);
@@ -216,7 +218,8 @@ public class AStarStategy extends AbstractStrategy {
 
                     
 
-                    if (this.closedList.contains(moveNode)) {
+                    if (this.closedList.contains(moveNode))
+                    {
                         //System.out.println("[A*] node already on closed list... go for next one!");
                     } else {
 
@@ -229,16 +232,12 @@ public class AStarStategy extends AbstractStrategy {
                         {
                             //System.out.println("node was already on open list");
                             ValueNode oldNewNode = this.openList.get(moveNode.getStateId());
-                            //System.out.println("oldNewNode: " + oldNewNode.g + oldNewNode.h);
-                            //System.out.println("moveNode: " + moveNode.g + moveNode.h);
-                            //System.out.println("--------------");
-                            //System.out.println(">> here");
-                            //if (oldNewNode.g + oldNewNode.h > moveNode.g + moveNode.h) {
-                            if (oldNewNode.g +oldNewNode.h  < moveNode.g + moveNode.h){
-                                System.out.println(">> Found better than is on openlist.");
+                            if (oldNewNode.g +oldNewNode.h  > moveNode.g + moveNode.h){
                                 oldNewNode.g = moveNode.g;
+                                oldNewNode.h = moveNode.h;
                                 oldNewNode.parent = moveNode.parent;
                                 oldNewNode.parentAction = moveNode.parentAction;
+                                this.openList.reload();
                             }
 
                         }

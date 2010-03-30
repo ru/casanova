@@ -44,6 +44,11 @@ public class OpenList implements IOpenList {
         return null;
     }
 
+    @Override
+    public void reload() {
+        Collections.sort(this.sortedValueNodeList);
+    }
+
     public boolean contains(ValueNode node) {
         return this.stateIdHashSet.containsKey(node.getStateId());
     }

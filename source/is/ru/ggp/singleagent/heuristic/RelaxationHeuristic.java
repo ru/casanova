@@ -59,6 +59,7 @@ public class RelaxationHeuristic implements IHeuristic {
                             this.goalStatePredicates.add(s);
                         } else {
                             System.out.println("Error, we must consider the predicate " + s);
+                            this.useGoalState = false;
                         }
                     }
                 }
@@ -81,9 +82,6 @@ public class RelaxationHeuristic implements IHeuristic {
                 return;
             }
         }
-
-
-
     }
 
     @Override
@@ -133,14 +131,5 @@ public class RelaxationHeuristic implements IHeuristic {
     @Override
     public String getHeuristicName() {
         return "Relaxation with penalty";
-    }
-
-
-    private boolean isGoalsubsetOfSuper(List<String> superState) {
-        for (String s : this.goalStatePredicates) {
-            if (!superState.contains(s))
-                return false;
-        }
-        return true;
     }
 }
