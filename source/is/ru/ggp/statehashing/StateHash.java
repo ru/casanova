@@ -16,8 +16,7 @@ import java.util.Map;
 public class StateHash
 {
     private Map<Integer,Integer> m_compoundHashMap = new HashMap<Integer,Integer>();
-    private ArrayList<String> m_compoundVector = new ArrayList<String>();
-    //private List<IFluent> m_compoundVector2 = new ArrayList<IFluent>();
+    private List<IFluent> m_compoundVector = new ArrayList<IFluent>();
 
     /*
      * Singleton implementation.
@@ -36,12 +35,12 @@ public class StateHash
 
     
     /*
-     * Returns a string which represents a state from the hash key (bit-string in an integer array) from the input.
+     * @return the array of IFluents represented by the int array 
      */
-    public String[] pullState(int[] hashKey)
+    public IFluent[] pullState(int[] hashKey)
     {
         int index = 0;
-        String tempString[] = new String[hashKey.length];
+        IFluent[] tempString = new IFluent[hashKey.length];
         
         // Find the compound sentences in the vector
         for(int i=0; i<hashKey.length; i++) {
@@ -51,86 +50,41 @@ public class StateHash
             }
         }
 
-        // Create a string array to return
-        String[] stringToReturn = new String[index];
-        System.arraycopy(tempString, 0, stringToReturn, 0, index);
+        // trim the array
+        IFluent[] trimmed = new IFluent[index];
+        System.arraycopy(tempString, 0, trimmed, 0, index);
 
-        return stringToReturn;
+        return trimmed;
     }
 
-                                                                                                                  
-    /*
-     * Creates a StateID (bit-string in an integer array) when given the compound statements a state.
-     */
-    public int[] pushState(String compoundStatements[])
-    {
-        int index = 0;
-        int[] stateID = new int[compoundStatements.length + m_compoundVector.size()];
-
-        /* Create a state array */
-        // For each string in the array...
-        for (String c : compoundStatements) {
-
-            // If the compound is already in the vector..
-            if (m_compoundHashMap.containsKey(c.hashCode())) {
-                index = m_compoundHashMap.get(c.hashCode());
-            }
-
-            // If the compound is not in the vector...
-            else {
-                m_compoundVector.add(c);
-                index = m_compoundVector.indexOf(c);
-                m_compoundHashMap.put(c.hashCode(), index);
-            }
-
-            // Change stateID bit with the same index as in the vector
-            stateID[index] = 1;
-        }
-
-        
-        /* Trim the size of the array which is returned! */
-        // Find the last 1 in the stateID
-        for (int i = stateID.length-1; i > -1; i--) {
-            if (stateID[i] == 1) {
-                index = i;
-                break;
-            }
-        }
-
-        // Copy the relevant part of the bit string to the return array
-        int[] stateToReturn = new int[index+1];
-        System.arraycopy(stateID, 0, stateToReturn, 0, index+1);
-
-        return stateToReturn;
-    }
-
-    /*
     public int[] pushState(IGameState state)
     {
+        List<String> fluentNames = state.getFluentNames();
+        List<IFluent> fluents = state.getFluents();
+        int[] stateID = new int[fluentNames.size() + m_compoundVector.size()];
+
         int index = 0;
-        int[] stateID = new int[state.getFluentNames().size() + m_compoundVector.size()];
-
-        /* Create a state array
+        
+        /* Create a state array */
         // For each string in the array...
-        for (IFluent c : state.getFluents()) {
-
+        for (IFluent c : fluents) {
+            int c_hash = c.hashCode();
             // If the compound is already in the vector..
-            if (m_compoundHashMap.containsKey(c.hashCode())) {
-                index = m_compoundHashMap.get(c.hashCode());
+            if (m_compoundHashMap.containsKey(c_hash)) {
+                index = m_compoundHashMap.get(c_hash);
             }
-
             // If the compound is not in the vector...
             else {
-                m_compoundVector2.add(c);
-                index = m_compoundVector2.indexOf(c);
-                m_compoundHashMap.put(c.hashCode(), index);
+                index = m_compoundVector.size();
+                m_compoundVector.add(c);
+                m_compoundHashMap.put(c_hash, index);
             }
 
             // Change stateID bit with the same index as in the vector
             stateID[index] = 1;
         }
 
-        /* Trim the size of the array which is returned!
+        /* Trim the size of the array which is returned */
         // Find the last 1 in the stateID
         for (int i = stateID.length-1; i > -1; i--) {
             if (stateID[i] == 1) {
@@ -140,10 +94,9 @@ public class StateHash
         }
 
         // Copy the relevant part of the bit string to the return array
-        int[] stateToReturn = new int[index+1];
-        System.arraycopy(stateID, 0, stateToReturn, 0, index+1);
+        int[] trimmed_stateID = new int[index+1];
+        System.arraycopy(stateID, 0, trimmed_stateID, 0, index+1);
 
-        return stateToReturn;
+        return trimmed_stateID;
     }
-    */
 }
