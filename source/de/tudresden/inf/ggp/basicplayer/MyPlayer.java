@@ -1,13 +1,13 @@
 package de.tudresden.inf.ggp.basicplayer;
 
+import org.eclipse.palamedes.gdl.connection.PlayerServer;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 import org.eclipse.palamedes.gdl.connection.Message;
 import org.eclipse.palamedes.gdl.connection.Player;
-import org.eclipse.palamedes.gdl.connection.PlayerServer;
 import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
@@ -163,10 +163,10 @@ public final class MyPlayer extends Player {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args){
-         
+        
         /* create and start player server */
     	try {
-    		new PlayerServer( new MyPlayer(), 
+    		new PlayerServer( new MyPlayer(),
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();
