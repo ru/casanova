@@ -7,7 +7,7 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 
-public class AStarStategy extends AbstractStrategy {
+public class SinglePlayerStrategy extends AbstractStrategy {
 
     private ISearch astarSearch;
 
@@ -17,7 +17,7 @@ public class AStarStategy extends AbstractStrategy {
     todo: Rename this class to single agent strategy.
     this strategy will contain astar and monte carlo.
      */
-    public AStarStategy() {
+    public SinglePlayerStrategy() {
 
         // Create instance of a star.
         this.astarSearch = new AStar(game);
