@@ -27,6 +27,7 @@ import org.eclipse.palamedes.kif.core.ast.KIFSeq;
 public final class MyPlayer extends Player {
 
 	static {
+		//Add the A-star Strategy to the factory!
 		StrategyFactory.getInstance().addDescription(
 							"AStarStrategy",
 							SinglePlayerStrategy.class.getCanonicalName(),
@@ -70,16 +71,27 @@ public final class MyPlayer extends Player {
         Game 		runningGame = (Game)factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
 
-        System.out.println("MyPlayer created the game.");
+        System.out.println("Casanova created the game.");
 
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
+        IStrategy strategy = null;
+        
+        System.out.print("Casanova see that we have "+runningGame.getRoleCount()+ " roles in the game, ");
+        
+        if(runningGame.getRoleCount() == 1) {
+        	System.out.println("lets go on with our AStar Combined with MC UCT Strategy.");
+        	strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
+        }
+        else {
+        	System.out.println("lets go on with Monte Carlo UCT Strategy.");
+        	strategy = StrategyFactory.getInstance().createStrategy("Monte Carlo UCT");
+        }
 
-        System.out.println( "MyPlayer created the strategy "      +
+        System.out.println( "Casanova created the strategy "      +
                             strategy.getClass().getSimpleName() +
                             "." );
 
-        System.out.println( "MyPlayer starts contemplate while doing yoga." );
+        System.out.println( "Casanova starts contemplate while doing yoga." );
 
         // create a match
         realMatch = createRealMatch( msg.getMatchId(),
@@ -88,8 +100,8 @@ public final class MyPlayer extends Player {
                                    	 msg.getRole(),
                                    	 startClock,
                                    	 playClock );
-        System.out.println( "MyPlayer created the match." );
-        System.out.println( "MyPlayer is prepared to start the game." );
+        System.out.println( "Casanova created the match." );
+        System.out.println( "Casanova is prepared to start the game." );
         System.out.println("stats:"+runningGame.getStatistic());
     }
     

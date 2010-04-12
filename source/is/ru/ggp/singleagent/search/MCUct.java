@@ -20,15 +20,17 @@ public class MCUct implements ISearch {
     private static final double w_h    = 1.0;
     private static final double w_n    = 1.0;
     private static final double w_n1   = 1.0;
-    private double reliability;
+
+	private double reliability;
     private double heuristic;
     private double expectedGoal;
-    private IGame  game;
     private int    maxSteps;
     private int    playerNumber;
     
-    public MCUct(IGame game){
-
+    public MCUct(IGame game) {
+        this.setHeuristic(-1);
+        this.setReliability(-1);
+        this.setExpectedGoal(0);
     }
     
     public int getGoalEstimate() {
@@ -42,7 +44,7 @@ public class MCUct implements ISearch {
         int visitCounts = 0;
         double sumOfGoals  = 0;
         public final int[] buckets = new int[101];
-
+        
         public final double getAvg() { return sumOfGoals / visitCounts; }
     }
 
@@ -113,8 +115,8 @@ public class MCUct implements ISearch {
                 if ( nextAvg > bestAvg) {
                     bestAvg      = nextAvg;
                     bestMove     = move;
-                    reliability  = variance;
-                    expectedGoal = bestAvg;
+                    setReliability(variance);
+                    setExpectedGoal(bestAvg);
                 }
 
                 
@@ -372,5 +374,41 @@ public class MCUct implements ISearch {
         
         return Math.sqrt(variance / visits);
     }
+
+    
+    /*
+     * Getter Setter Just In Case we want to use.............
+     */
+	public void setReliability(double reliability) {
+		this.reliability = reliability;
+	}
+
+	public double getReliability() {
+		return reliability;
+	}
+
+	public void setExpectedGoal(double expectedGoal) {
+		this.expectedGoal = expectedGoal;
+	}
+
+	public double getExpectedGoal() {
+		return expectedGoal;
+	}
+
+	public void setHeuristic(double heuristic) {
+		this.heuristic = heuristic;
+	}
+
+	public double getHeuristic() {
+		return heuristic;
+	}
+
+	public void setMaxSteps(int maxSteps) {
+		this.maxSteps = maxSteps;
+	}
+
+	public int getMaxSteps() {
+		return maxSteps;
+	}
     
 }
