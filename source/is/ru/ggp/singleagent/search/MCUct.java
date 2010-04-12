@@ -10,7 +10,7 @@ import org.eclipse.palamedes.gdl.core.model.*;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.FringeFrame;
 
-public class MCUct implements ISearch {
+public abstract class MCUct implements ISearch {
 	
     private Match match;
     
@@ -66,7 +66,7 @@ public class MCUct implements ISearch {
     int                                simCount;
     int                                moveCount;
 
-    @Override
+
     public void initSearch(Match match) {
 
     	this.match = match;
@@ -80,8 +80,8 @@ public class MCUct implements ISearch {
         simulate();
     }
     
-    @Override
-    public IMove getMove(IGameNode currentNode) {
+  
+    public IMove findNextMove(IGameNode currentNode) {
         simulate();
 
         try {

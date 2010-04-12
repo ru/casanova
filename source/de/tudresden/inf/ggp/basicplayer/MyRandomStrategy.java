@@ -18,7 +18,7 @@ public class MyRandomStrategy extends AbstractStrategy {
             return moves.get( random.nextInt( moves.size() ) )[playerNumber];
         }
         catch (InterruptedException e) {
-            System.out.println("getMove() stopped by time.");
+            System.out.println("findNextMove() stopped by time.");
         }
         
         return null;

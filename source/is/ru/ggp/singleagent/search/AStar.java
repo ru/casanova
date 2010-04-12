@@ -25,13 +25,58 @@ public class AStar implements ISearch{
     private ValueNode bestValueNode = null;
     private Stack<IMove> solvedMovesStack = new Stack<IMove>();
     private Match match;
+    
 
 
 
+
+    private IMove nextMove = null;
+    private IGameNode cNode = null;
+    private boolean stopSeach = false;
+    private boolean initPhase = true;
+
+
+    @Override
+    public boolean isSolved() {
+        return this.solved;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Thread starts");
+        if(this.initPhase)
+        {
+            System.out.println("Thread start in init");
+            this.initSearch();
+            this.initPhase = false;
+        }
+        else{
+            System.out.println("Thread start in search");
+            this.findNextMove();
+        }
+    }
+
+    @Override
+    public void stopSearch() {
+        this.stopSeach = true;
+    }
+
+    @Override
+    public void setMatch(Match initMatch) {
+        this.match = initMatch;
+    }
+
+    @Override
+    public IMove getNextMove() {
+        return nextMove;
+    }
+
+    @Override
+    public void setCurrentNode(IGameNode currentNode) {
+        this.cNode = currentNode;
+    }
 
     public AStar(IGame game){
-
-
 
         // Create instance of the open and closed list.
         this.closedList = new ClosedList();
@@ -41,15 +86,13 @@ public class AStar implements ISearch{
         this.heuristic = HeuristicFactory.getRelaxation(game);
     }
 
-    public void initSearch(Match match){
-
-        this.match = match;
-
+    public void initSearch(){
+        
         this.heuristic.readGoalStateFromMatch(match);
 
         // Create the initial node and calculate the heuristic value
         // and set the cost to 0 (where it is the first node).
-        ValueNode node = new ValueNode(match.getCurrentNode(), this.match.getGame());
+        ValueNode node = new ValueNode(this.match.getCurrentNode(), this.match.getGame());
         node.g = 0;
         node.h = this.heuristic.getHeuristic(node);
 
@@ -60,21 +103,22 @@ public class AStar implements ISearch{
     }
     
     public int getGoalEstimate() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;
     }
 
-    public IMove getMove(IGameNode currentNode) {
+    public void findNextMove() {
         // Check if we have already solved the game
         if (this.solved && !this.hasNotMovedYet) {
             IMove returnMove = this.solvedMovesStack.pop();
-            return returnMove;
+            this.nextMove = returnMove;
+            return;
         }
         hasNotMovedYet = true;
 
         // Check if we want to continue the search from the init match phase.
         // This will only be for the first time to combine the start time and the
         // first play time.
-        ValueNode node = new ValueNode(currentNode, this.match.getGame());
+        ValueNode node = new ValueNode(this.cNode, this.match.getGame());
         node.h = this.heuristic.getHeuristic(node);
         node.g = 0;
 
@@ -86,7 +130,8 @@ public class AStar implements ISearch{
 
         this.astar();
 
-        IMove returnMove = null;
+
+        //IMove returnMove = null;
 
         // We must select a move that we want to return.
         if (this.bestValueNode != null) {
@@ -95,36 +140,42 @@ public class AStar implements ISearch{
                 System.out.println("[A*] using a solved path.");
                 this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                 this.hasNotMovedYet = false;
-                return this.solvedMovesStack.pop();
+                this.nextMove = this.solvedMovesStack.pop();
+                return;
 
             }
             else if (this.bestValueNode.getGoalValue() >= 30)
             {
             	//System.out.println("[A*] We pick move from best value"+bestValueNode.getGoalValue());
-                returnMove = this.reconstructPathFromNode(this.bestValueNode).pop();
-                if (returnMove == null) {
+                this.nextMove = this.reconstructPathFromNode(this.bestValueNode).pop();
+                if (this.nextMove == null) {
                     System.out.println("WTF!!");
                 }
             }
             else
             	//System.out.println("[A*] We pick move from most prominent");
-                returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
-                if (returnMove == null) {
+                this.nextMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+                if (this.nextMove == null) {
                     System.out.println(">> WARNING ACTION WAS NULL!");
                 }
 
         } else {
             //System.out.println("[A*] We pick move from most prominent");
-            returnMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
+            this.nextMove = this.reconstructPathFromNode(this.openList.getMostProminentGameNode()).pop();
         }
         //System.out.println("Move returned:" + returnMove);
         this.closedList.clear();
         this.openList.clear();
         this.bestValueNode = null;
-        return returnMove;
+        //this.nextMove = returnMove;
+
+        //if(this.r)
+        System.out.println("next move set to: " + this.nextMove);
+        return;
     }
 
     private void astar() {
+        try{
         int bestTerminalValue = -1;
 
         String player = this.match.getGame().getRoleNames()[0];
@@ -133,13 +184,16 @@ public class AStar implements ISearch{
 
         System.out.println("[A*] Astar search initalized.");
 
-        TimerFlag timer = match.getTimer();
+
         IReasoner reasoner = this.match.getGame().getReasoner();
 
         while (!this.openList.isEmpty() && bestTerminalValue < 100) {
-            if (timer.interrupted())
+            if (this.stopSeach){
+                this.stopSeach = false;
                 return;
 
+            }
+            
             // Pick the best node from the fringe.
             ValueNode node = this.openList.getMostProminentGameNode();
 
@@ -151,7 +205,7 @@ public class AStar implements ISearch{
                     this.bestValueNode = node;
                     if (this.bestValueNode.getGoalValue() == 100) {
                         this.solved = true;
-                        //System.out.println("[A*] Game solved.");
+                        System.out.println("[A*] Game solved.");
                         this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                         return;
                     }
@@ -163,7 +217,7 @@ public class AStar implements ISearch{
                        // System.out.println("[A*] Found node value with better value: " + node.getGoalValue());
                         if (this.bestValueNode.getGoalValue() == 100) {
                             this.solved = true;
-                            //System.out.println("[A*] Game solved.");
+                            System.out.println("[A*] Game solved.");
                             //ValueNode n = this.bestValueNode;
                             this.solvedMovesStack = this.reconstructPathFromNode(this.bestValueNode);
                             return;
@@ -193,7 +247,7 @@ public class AStar implements ISearch{
                     moveNode.h = this.heuristic.getHeuristic(moveNode);
                     moveNode.g = node.g + 1;
                     //double moveNode_heuristic = moveNode.h;
-                    //System.out.println("Move node heuristic: " + moveNode_heuristic);
+                    //System.out.println("Move node heuristic: " + moveNode.h);
 
                     moveNode.parent = node;
                     moveNode.parentAction = move;
@@ -230,6 +284,11 @@ public class AStar implements ISearch{
                 System.out.println("[A*] got InterruptedException while going through neighbours.");
                 return;
             }
+        }
+        }
+        catch (Exception e)
+        {
+            System.out.println("WTF!!!");
         }
     }
     
