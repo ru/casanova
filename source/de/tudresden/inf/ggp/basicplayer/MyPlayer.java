@@ -1,24 +1,36 @@
 package de.tudresden.inf.ggp.basicplayer;
 
-import org.eclipse.palamedes.gdl.connection.PlayerServer;
+import org.eclipse.palamedes.gdl.core.ast.RuleGoal;
+import org.eclipse.palamedes.gdl.core.model.IFluent;
+import org.eclipse.palamedes.gdl.core.model.utils.GenericFluent;
+import org.eclipse.palamedes.gdl.core.model.utils.TermWrapper;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.regex.*;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.eclipse.palamedes.gdl.connection.Message;
 import org.eclipse.palamedes.gdl.connection.Player;
+import org.eclipse.palamedes.gdl.connection.PlayerServer;
 import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
-import is.ru.ggp.singleagent.AStarStategy;
+import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarloUCT;
+
+import is.ru.ggp.singleagent.SinglePlayerStrategy;
+import org.eclipse.palamedes.kif.core.ast.KIFSeq;
+
 public final class MyPlayer extends Player {
 
 	static {
+		//Add the A-star Strategy to the factory!
 		StrategyFactory.getInstance().addDescription(
 							"AStarStrategy",
-							AStarStategy.class.getCanonicalName(),
+							SinglePlayerStrategy.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
 	
@@ -56,19 +68,34 @@ public final class MyPlayer extends Player {
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
         GameFactory factory 	= GameFactory.getInstance();
-        IGame 		runningGame = factory.createGame( GameFactory.JAVAPROVER,
+        Game 		runningGame = (Game)factory.createGame( GameFactory.JAVAPROVER,
         											  msg.getGameDescription() );
-        System.out.println("MyPlayer created the game.");
 
-        
+        System.out.println("Casanova created the game.");
+
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
+        IStrategy strategy = null;
+        
+        System.out.print("Casanova see that we have "+runningGame.getRoleCount()+ " roles in the game, ");
+        
+        /*
+         *  GDL ROLES CHECK! 
+         *  Use A-Star Strategy if it is a single player game, otherwise we use UCT Monte Carlo.
+         */
+        if(runningGame.getRoleCount() == 1) {
+        	System.out.println("lets go on with our AStar Combined with MC UCT Strategy.");
+        	strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
+        }
+        else {
+        	System.out.println("lets go on with Monte Carlo UCT Strategy.");
+        	strategy = StrategyFactory.getInstance().createStrategy("Monte Carlo UCT");
+        }
 
-        System.out.println( "MyPlayer created the strategy "      +
+        System.out.println( "Casanova created the strategy "      +
                             strategy.getClass().getSimpleName() +
                             "." );
 
-        System.out.println( "MyPlayer starts contemplate while doing yoga." );
+        System.out.println( "Casanova starts contemplate while doing yoga." );
 
         // create a match
         realMatch = createRealMatch( msg.getMatchId(),
@@ -77,8 +104,8 @@ public final class MyPlayer extends Player {
                                    	 msg.getRole(),
                                    	 startClock,
                                    	 playClock );
-        System.out.println( "MyPlayer created the match." );
-        System.out.println( "MyPlayer is prepared to start the game." );
+        System.out.println( "Casanova created the match." );
+        System.out.println( "Casanova is prepared to start the game." );
         System.out.println("stats:"+runningGame.getStatistic());
     }
     
@@ -163,10 +190,10 @@ public final class MyPlayer extends Player {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args){
-        
+         
         /* create and start player server */
     	try {
-    		new PlayerServer( new MyPlayer(),
+    		new PlayerServer( new MyPlayer(), 
     						  PlayerServer.getOptions(args) ).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();

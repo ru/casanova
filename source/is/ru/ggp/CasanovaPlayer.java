@@ -12,7 +12,7 @@ import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 import org.eclipse.palamedes.gdl.core.simulation.StrategyFactory;
 
-import is.ru.ggp.singleagent.AStarStategy;
+import is.ru.ggp.singleagent.SinglePlayerStrategy;
 
 
 public class CasanovaPlayer extends Player
@@ -20,7 +20,7 @@ public class CasanovaPlayer extends Player
 	static {
 		StrategyFactory.getInstance().addDescription(
 							"AStarStrategy",
-							AStarStategy.class.getCanonicalName(),
+							SinglePlayerStrategy.class.getCanonicalName(),
             				"Simulates games and chooses the best path." );
 	}
 
