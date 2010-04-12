@@ -78,6 +78,10 @@ public final class MyPlayer extends Player {
         
         System.out.print("Casanova see that we have "+runningGame.getRoleCount()+ " roles in the game, ");
         
+        /*
+         *  GDL ROLES CHECK! 
+         *  Use A-Star Strategy if it is a single player game, otherwise we use UCT Monte Carlo.
+         */
         if(runningGame.getRoleCount() == 1) {
         	System.out.println("lets go on with our AStar Combined with MC UCT Strategy.");
         	strategy = StrategyFactory.getInstance().createStrategy("AStarStrategy");
