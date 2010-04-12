@@ -1,13 +1,17 @@
 package is.ru.ggp.MTUCT;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class UCTThread implements Runnable{
     private UCTNodeMT root;
     int maxDepth;
+    AtomicInteger counter;
 
-    public UCTThread(UCTNodeMT root, int maxD)
+    public UCTThread(UCTNodeMT root, int maxD, AtomicInteger c)
     {
         this.root = root;
         this.maxDepth = maxD;
+        counter = c;
     }
 
     public void run()
@@ -32,5 +36,6 @@ public class UCTThread implements Runnable{
             if (current == null)
                 break;
         }
+        int throwaway = counter.decrementAndGet();
     }
 }

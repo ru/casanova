@@ -4,12 +4,14 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 
-public class UCTStrategyMultiThread implements Runnable
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class UCTStrategyMultiThread implements Runnable 
 {
 	private UCTNodeMT root;
 	IGame myGame;
 	int maxDepth;
-    Integer threadCount;
+    AtomicInteger threadCount;
     Integer maxThreads;
     long timeToSleep;
 
@@ -19,7 +21,7 @@ public class UCTStrategyMultiThread implements Runnable
 		this.maxDepth = maxDepth;
 		UCTNode.setReasoner(myGame);
 		root = new UCTNodeMT(startSearch,null,null);
-        threadCount = new Integer(0);
+        threadCount = new AtomicInteger(0);
         maxThreads = new Integer(numThreads);
         timeToSleep = tts;
 	}
@@ -35,27 +37,24 @@ public class UCTStrategyMultiThread implements Runnable
     {
         while(true)
         {
-            synchronized(threadCount)
-            {
-                while(threadCount<maxThreads)
+
+                while(threadCount.getAndIncrement()<maxThreads)
                 {
-                    threadCount++;
-                    UCTThread newThread = new UCTThread(root,maxDepth);
+                    UCTThread newThread = new UCTThread(root,maxDepth,threadCount);
                     new Thread(newThread).start();
                 }
-            }
+                int throwaway = threadCount.getAndDecrement();
             try{
             Thread.sleep(timeToSleep);  }catch(InterruptedException e){}
         }
     }
-    public void advanceRoot(IMove[] validated)
+    public void advanceRoot(String[] validated) throws    InterruptedException
     {
         int mtholder = maxThreads;
         maxThreads = 0;
-        while(0 < threadCount)
+        while(0 < threadCount.get())
         {
-                  try{
-            Thread.sleep(timeToSleep);  }catch(InterruptedException e){}
+            Thread.sleep(timeToSleep);
         }
         root = root.progress(validated);
         root.parent = null;

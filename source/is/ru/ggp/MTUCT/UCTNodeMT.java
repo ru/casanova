@@ -2,6 +2,7 @@ package is.ru.ggp.MTUCT;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
@@ -55,7 +56,7 @@ public class UCTNodeMT
 	{
 		IGameState newState = state;
 		Random myRandom = new Random();
-		synchronized(children)
+		synchronized(this)
 		{
 			IMove[] move = new IMove[moves.length];
 			int singledimension = 0;
@@ -95,7 +96,7 @@ public class UCTNodeMT
 
 	public void update(int[] moveToUpdate, int[] values)
 	{
-		synchronized(aggregate)
+		synchronized(this)
 		{
 			for(int i = 0; i < moveToUpdate.length; i++)
 				aggregate[i][moveToUpdate[i]] += (double)values[i];
@@ -162,17 +163,17 @@ public class UCTNodeMT
         }
         return moves[player][bestIndex];
     }
-    public UCTNodeMT progress(IMove[] newMove)
+    public UCTNodeMT progress(String[] newMove)
     {
         int moveCount;
         int playercount = 0;
         int[] milkCarton = new int[moves.length];
-        for(IMove move : newMove)
+        for(String move : newMove)
         {
             moveCount = 0;
             for(IMove myMove: moves[playercount])
             {
-                if(move.getMove().equals(myMove.getMove()))
+                if(move.equals(myMove.getMove()))
                 {
                     milkCarton[playercount] =  moveCount;
                     break;
