@@ -23,20 +23,20 @@ public class SinglePlayerStrategy extends AbstractStrategy {
     public SinglePlayerStrategy() {
 
         // Create instance of a star.
-        //this.astarSearch = new AStar(game);
-        this.mcuctSearch = new MCUct(game);
+        this.astarSearch = new AStar(game);
+        //this.mcuctSearch = new MCUct(game);
     }
 
     public void initMatch(Match initMatch) {
         super.initMatch(initMatch);
         
         // initalize the a star search.
-        //this.astarSearch.initSearch(initMatch);
-        this.mcuctSearch.initSearch(initMatch);
+        this.astarSearch.initSearch(initMatch);
+        //this.mcuctSearch.initSearch(initMatch);
     }
 
     public IMove getMove(IGameNode currentNode) {
-       //return this.astarSearch.getMove(currentNode);
-    	return this.mcuctSearch.getMove(currentNode);
+    	return this.astarSearch.getMove(currentNode);
+    	//return this.mcuctSearch.getMove(currentNode);
     }
 }
